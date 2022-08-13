@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nomie Weather Plugin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../nomie-plugin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <link href="/plugins/lets-eat/lets-eat.css" rel="stylesheet" />
+    
+  </head>
+  <body class="bg-white dark:bg-gray-800">
+    <div id="app" class="w-screen h-screen flex flex-col">
+      <header class="sticky top-0 left-0 right-0 px-4 py-1 w-full flex-grow-0">
+        <input @input="search" v-model="searchTerm" placeholder="Search Food..." type="search" class="dark:bg-black dark:text-white text-lg px-4 py-1 rounded-full w-full">
+      </header>
+      <div id="content" class="flex flex-col items-center dark:text-white flex-grow flex-shrink overflow-y-auto">
+
+        <div class="results border-b border-gray-200 dark:border-black w-full flex-shrink flex-grow overflow-x-auto shadow-2xl" style="min-height:40vh;">
+          <div v-if="!results.length" class="text-gray-500 p-6 text-center">
+            Search for Food and Drinks
+          </div>
+  
+          <ul class="w-full grid grid-cols-1 gap-2 px-4 py-2" aria-label="Search Results">
+            <button @click="selectFood(food)" v-for="food in results" 
+              class="bg-gray-200 dark:bg-gray-900 py-2 px-3 w-full rounded-md flex items-center w-full">
+              <div class="main w-full flex-grow flex-shrink">
+                <h2 class="text-left text-sm">
+                  <strong>{{food.description}} </strong>
+                  <span class="text-gray-600 dark:text-gray-400 font-medium capitalize" v-if="food.brandName">- {{food.brandName}}</span>
+                </h2>
+                <div class="text-xs text-gray-500 flex-shrink-0 w-full text-left">
+                  <span v-if="food.cals">
+                    {{food.cals}} cal
+                  </span>
+                  <span>{{food.servingSize}}{{food.servingSizeUnit}}</span>
+                </div>
+              </div>
+              <div class="rounded-full w-11 h-11 flex-shrink-0 bg-gray-300 dark:bg-black text-blue-500 flex items-center justify-center leading-none text-2xl">+</div>
+            </button>
+          </ul>
+          
+        </div>
+        <div class="grid grid-cols-2 w-full py-2 px-4 space-y-2 min-h-20 bg-gray-200 dark:bg-gray-900 h-full flex-grow flex-shrink overflow-x-auto">
+          <div class="food-items">
+            <button v-for="food in selected" class="px-4 py-2 min-h-8 items-center w-full bg-pink-500 dark:text-white">
+              {{food.description}}
+            </button>
+          </div>
+          <section aria-label="Totals">
+            <h2>Totals</h2>
+            <ul>
+              <li v-for="nut in nutrients">
+                {{nut.name}} {{nut.value}}{{nut.unit}}
+              </li>
+            </ul>
+          </section>
+        </div>
+
+      </div>
+      
+
+    </div>
+    <style lang>
+      .food-button {
+        
+      }
+    </style>
+    <script src="/plugins/lets-eat/lets-eat.js"></script>
+  </body>
+</html>

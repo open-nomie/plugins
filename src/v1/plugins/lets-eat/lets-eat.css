@@ -1,0 +1,4 @@
+.food-button {
+  @apply bg-gray-100 dark:bg-gray-900;
+  @apply py-1 px-3;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nomie Weather Plugin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/v1/nomie-plugin.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+  </head>
+  <body class="bg-white dark:bg-gray-800">
+    <div id="content" class="px-6 py-2 flex flex-col items-center">
+
+      <div v-if="error && !currently.temp" class="bg-red-500 w-full px-4 py-2 text-sm text-white mb-5">
+        {{error}}
+      </div>
+
+      <h1
+        class="text-center outline outline-white dark:outline-black px-6 mt-10 h-20 mx-auto mb-10 rounded-full dark:text-white flex items-center justify-center text-6xl font-extrabold"
+      >
+        {{currently.temp}}°
+      </h1>
+      <!-- <p>{{currently}}</p> -->
+      <ul v-if="currently.temp" class="text-center dark:text-white">
+        <li><strong>Weather for {{currently.name}}</strong></li>
+        <li><strong>Low temp</strong> {{currently.tempLow}}°</li>
+        <li><strong>High temp</strong> {{currently.tempHigh}}°</li>
+        <li><strong>Wind</strong> {{currently.wind}}</li>
+        <li><strong>Cloud Cover</strong> {{currently.clouds}}</li>
+        <li><strong>Pressure</strong> {{currently.pressure}}</li>
+      </ul>
+
+      <button v-if="currently.temp"
+        class="mx-auto block mt-5 py-1 px-2 text-xs rounded-md bg-pink-500 text-white"
+        @click="trackWeather"
+      >
+        Track Again
+      </button>
+    </div>
+
+    <script src="/plugins/weather/weather.js"></script>
+  </body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nomie Weather Plugin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../nomie-plugin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+  </head>
+  <body class="bg-white dark:bg-gray-800">
+    <div id="content" class="px-6 py-2 flex flex-col items-center">
+
+      <div v-if="error && !currently.temp" class="bg-red-500 w-full px-4 py-2 text-sm text-white mb-5">
+        {{error}}
+      </div>
+
+      <h1
+        class="text-center outline outline-white dark:outline-black px-6 mt-10 h-20 mx-auto mb-10 rounded-full dark:text-white flex items-center justify-center text-6xl font-extrabold"
+      >
+        {{currently.temp}}°
+      </h1>
+      <!-- <p>{{currently}}</p> -->
+      <ul v-if="currently.temp" class="text-center dark:text-white">
+        <li><strong>Pressure</strong> {{currently.pressure}}</li>
+        <li><strong>Humidity</strong> {{currently.humidity}}</li>
+        <li><strong>Feels Like</strong> {{currently.feelslike}}°</li>
+        <li><strong>UV</strong> {{currently.uvindex}}</li>
+        <li><strong>Cloud Cover</strong> {{currently.cloudcover}}</li>
+      </ul>
+
+      <button v-if="currently.temp"
+        class="mx-auto block mt-5 py-1 px-2 text-xs rounded-md bg-pink-500 text-white"
+        @click="trackWeather"
+      >
+        Track Again
+      </button>
+    </div>
+
+    <script type="text/javascript">
+      let date = new Date().toDateString();
+      let lastDate = localStorage.getItem("last-date-v1");
+
+      const plugin = new NomiePlugin({
+        name: "Weather",
+        addToCaptureMenu: true,
+        addToMoreMenu: true,
+        emoji: "⛈",
+        version: "1.0",
+        description: "Get todays weather for your current location",
+        uses: ["createNote", "onLaunch", "getLocation"],
+      });
+
+ 
+
+      
+
+      const getCurrentConditions = async () => {
+        const APIKEY = "UUST9GTMUAK87JBEAGVL3C5P9";
+        const call = await fetch(
+          "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/New%20York%20City%2CNY?unitGroup=us&key=" +
+            APIKEY +
+            "&contentType=json",
+          {
+            method: "GET",
+            headers: {},
+          }
+        );
+        const data = await call.json();
+
+        return {
+          ...data.currentConditions,
+          ...{
+            description: data.description,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            dateString: date,
+          },
+        };
+      };
+
+      new Vue({
+        data: () => ({
+          message: "Row",
+          error: undefined,
+          currently: {},
+        }),
+        async mounted() {
+          // this.loadWeather();
+          plugin.onLaunch(()=>{
+            console.log("☔️☔️ weather plugin - onLaunch");
+            this.loadWeather();
+          });
+          plugin.onUIOpened(()=>{
+            console.log("☔️☔️ weather plugin - onUIOpened");
+            this.loadWeather();
+          })
+          plugin.onRegistered(()=>{
+            this.loadWeather();
+          })
+          setTimeout(()=>{
+            console.log("error test", this.currently.temp);
+            if(!this.currently.temp) this.error = "Unable to get your weather. Try again later.";
+          },6000)
+
+          const prefs = await plugin.getStorageItem('prefs');
+          if(!prefs) {
+            const written = await plugin.setStorageItem('prefs', {
+              created: new Date()
+            });
+          }
+        },
+        async unmounted() {
+          console.log("unmounted weather");
+        },
+        methods: {
+          async loadWeather() {
+            console.log("🗳🗳🗳 weather", "get location");
+            const location = await plugin.getLocation();
+            console.log("🗳🗳🗳🗳 weather", {location});
+            if(location) {
+              let weather = await this.getWeatherCached();
+              if (weather.fresh) {
+                this.trackWeather();
+              }
+              this.currently = weather;
+            } else {
+              this.error = "Unable to fine your location";
+            }
+          
+          },
+          async getWeatherCached() {
+            let fromCache = await plugin.getStorageItem("last-weather-data")
+            console.log("Weather from Cache", fromCache);
+            let lookupData = fromCache.value || {};
+            
+            let cached = undefined;
+
+            if (lookupData && lookupData.captured) {
+              if (lookupData.captured === new Date().toDateString()) {
+                cached = lookupData;
+                cached.fresh = false;
+              } else {
+                console.log(`${lookupData.captured} === ${new Date().toDateString()}`)
+              }
+            }
+
+            if (!cached) {
+              let weather = await getCurrentConditions();
+              if (weather) {
+                weather.captured = date;
+                if (weather.temp) {
+                  // await plugin.setStorageItem('last-weather-data', weather);
+                }
+              }
+              cached = weather;
+              cached.fresh = true;
+            }
+            return cached;
+          },
+          async getWeatherAsNote() {
+            const currently = await this.getWeatherCached();
+            if (currently) {
+              return {
+                note: `${currently.description} #temp(${currently.temp}) #humidity(${currently.humidity}) #clouds(${currently.cloudcover})`,
+                lat: currently.latitude,
+                lng: currently.longitude,
+              };
+            }
+            return undefined;
+          },
+          async trackWeather() {
+            const weatherNote = await this.getWeatherAsNote();
+            if (weatherNote) {
+             // plugin.createNote(weatherNote);
+            }
+          },
+        },
+      }).$mount("#content");
+    </script>
+  </body>
+</html>
