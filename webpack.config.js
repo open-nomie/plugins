@@ -28,13 +28,14 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: "src/v1/index.html", to: "v1/index.html" },
+        { from: "src/index.html", to: "index.html" },
         { from: "src/v1/plugins", to: "v1/plugins" }
       ],
     }),
   ],
   output: {
     filename: "nomie-plugin.js",
-    path: path.resolve(__dirname, "dist/v1"),
+    path: path.resolve(__dirname, "dist/v1/"),
     clean: true,
   },
 };
