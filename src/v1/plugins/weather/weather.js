@@ -90,13 +90,14 @@ new Vue({
      * Check if we have an API key for OpenWeatherMap
      * if not, prompt the user for the api
      */
-    plugin.onRegistered(async () => {
+    plugin.onRegistered(async (payload) => {
+      console.log({registered: payload});
       await plugin.storage.init();
       if (!plugin.storage.getItem('apikey')) {
-        const key = await plugin.prompt('OpenWeatherMap API Key', 
+        const res = await plugin.prompt('OpenWeatherMap API Key', 
           `OpenWeatherMap API Required. Get your [FREE API key here](https://home.openweathermap.org/api_keys)`)
-        if (key && key.value) {
-          plugin.storage.setItem('apikey', key.value);
+        if (res && res.value) {
+          plugin.storage.setItem('apikey', res.value);
         }
       }
     })

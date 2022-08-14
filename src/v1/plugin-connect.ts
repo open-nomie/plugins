@@ -1,4 +1,4 @@
-// const NOMIEPROMPTS = {};
+
 export type PluginUseTypes =
   | "trackablesSelected"
   | "selectTrackables"
@@ -43,6 +43,8 @@ type UserPrefs = {
   theme: "dark" | "light" | "system";
 };
 
+/* It takes a plugin object as an argument, and
+provides a set of methods that can be used to communicate with the Nomie app */
 export class NomiePlugin {
   pluginDetails: PluginType;
   registered: boolean;
@@ -79,19 +81,14 @@ export class NomiePlugin {
     this.register();
   }
 
-  // _writeStorage() {
-  //   localStorage.setItem('npl-storage', JSON.stringify(this.storage));
-  // }
 
-  // getItem(key: string) {
-  //   return this.storage[key];
-  // }
-
-  // setItem(key: string, value: string) {
-  //   this.storage[key] = value;
-  //   this._writeStorage();
-  // }
-
+  /**
+   * It returns a promise that resolves to an array of notes
+   * @param {string} term - The search term
+   * @param date - The date to search from.
+   * @param [daysBack=7] - How many days back to search.
+   * @returns A promise that resolves to an array of notes.
+   */
   searchNotes(term: string, date = new Date(), daysBack = 7) {
     return new Promise((resolve) => {
       let id = this.toId("search");
@@ -107,6 +104,12 @@ export class NomiePlugin {
     });
   }
 
+  /**
+   * It returns a promise that resolves to an array of trackables
+   * @param {any} type - The type of trackable to select. This can be a string or an array of strings.
+   * @param [multiple=true] - boolean - whether or not to allow multiple trackables to be selected
+   * @returns A promise that resolves to an array of trackables.
+   */
   selectTrackables(type: any, multiple = true) {
     return new Promise((resolve) => {
       let id = this.toId("select");
@@ -117,13 +120,27 @@ export class NomiePlugin {
     });
   }
 
+  /**
+   * If the prefs object is not null, return the value of the use24Hour property
+   * @returns The value of the use24Hour property of the prefs object.
+   */
   get is24Hour() {
     return this.prefs?.use24Hour;
   }
+
+  /**
+   * If the prefs object is not null, return the value of the useMetric property
+   * @returns A boolean value that is the value of the useMetric property of the prefs object.
+   */
   get isMetric() {
     return this.prefs?.useMetric;
   }
 
+  /**
+   * If the log is a string, then broadcast a createNote event with a note property set to the log.
+   * Otherwise, broadcast a createNote event with the log as the payload
+   * @param {any} log - any - This is the log that will be sent to the client.
+   */
   createNote(log: any) {
     setTimeout(() => {
       if (typeof log === "string") {
@@ -140,6 +157,10 @@ export class NomiePlugin {
     });
   }
 
+  /**
+   * It listens for messages from the native app, and then fires the appropriate listener function
+   * @param {any} event - any
+   */
   onMessage(event: any) {
     const action = event.data.action;
     const payload = event.data.data;
@@ -151,7 +172,6 @@ export class NomiePlugin {
         this._fireListeners("onRegistered", this);
         break;
       case "onUIOpened":
-        console.log("onUIOpened Called!");
         this._fireListeners("onUIOpened", this);
         break;
       case "onNote":
@@ -170,7 +190,6 @@ export class NomiePlugin {
           this.listenerResponse(payload);
           break;
       case "getTrackableUsageReply":
-        console.log("⛔️⛔️⛔️⛔️⛔️⛔️ Trackable Usage Reply", payload);
         this.listenerResponse(payload);
         break;
       case "searchReply":
@@ -226,6 +245,11 @@ export class NomiePlugin {
     });
   }
 
+  /**
+   * It returns a promise that resolves to a trackable object.
+   * @param {string} tag - The tag of the trackable you want to get.
+   * @returns A promise that resolves to the trackable object.
+   */
   getTrackable(tag:string) {
     return new Promise((resolve) => {
       let id = this.toId(`trackable-${tag}`);
@@ -238,6 +262,14 @@ export class NomiePlugin {
     });
   }
 
+  /**
+   * "Get the value of a trackable input with the given tag."
+   * 
+   * The first thing we do is create a promise. This is a promise that will be resolved with the value
+   * of the trackable input
+   * @param {string} tag - The tag of the trackable input you want to get the value of.
+   * @returns A promise that resolves to the value of the trackable input.
+   */
   getTrackableInput(tag:string) {
     return new Promise((resolve) => {
       let id = this.toId(`trackable-value-${tag}`);
@@ -249,6 +281,13 @@ export class NomiePlugin {
     });
   }
 
+  /**
+   * `getTrackableUsage` is a function that returns a promise that resolves to an array of objects.
+   * Each object has a `date` property and a `count` property. The `date` property is a date object.
+   * The `count` property is a number
+   * @param {getTrackableUsageProps} props - {
+   * @returns A promise that resolves to the usage data.
+   */
   getTrackableUsage(props: getTrackableUsageProps) {
     return new Promise((resolve) => {
       let id = this.toId(`usage-${props.tag}`);
@@ -436,28 +475,51 @@ export class NomiePlugin {
   }
 }
 
+/* It's a wrapper for the storage plugin that makes it easier to work with */
 export class NomieStorage {
   plugin: NomiePlugin;
   data: any = {};
   filename: string;
+  
   constructor(plugin: NomiePlugin, filename: string = "prefs") {
     this.plugin = plugin;
     this.filename = filename;
     this.data = {};
   }
+  
+  /**
+   * > The `init` function loads the data from the storage plugin and sets the `data` property
+   * @returns The NomieStorage object
+   */
   async init(): Promise<NomieStorage> {
     const raw = await this.plugin.getStorageItem(this.filename);
     if (raw && raw.value) this.data = raw.value;
     return this;
   }
+  
+  /**
+   * It returns the value of the key in the data object
+   * @param {string} key - The key of the item to get.
+   * @returns The value of the key in the data object.
+   */
   getItem(key: string): any {
     return this.data[key];
   }
+  
+  /**
+   * It sets the value of the key in the data object, and then saves the data object to the file
+   * @param {string} key - The key of the item to set.
+   * @param {any} value - any
+   * @returns The promise that is returned from the save() method.
+   */
   async setItem(key: string, value: any) {
-    console.log(`✅ setting ${key}`, value);
     this.data[key] = value;
     return await this.save();
   }
+  /**
+   * It saves the data to the file
+   * @returns The promise from the plugin.
+   */
   private async save() {
     return this.plugin.setStorageItem(this.filename, this.data);
   }
