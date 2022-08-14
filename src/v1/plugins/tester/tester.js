@@ -7,22 +7,28 @@ const plugin = new NomiePlugin({
   emoji: "🛠",
   version: "1.0",
   description: "Tester Plugin",
-  uses: [ // NOTE: if you change these, you will need to reinstall this plugin in Nomie
+  uses: [
+    // NOTE: if you change these, you will need to reinstall this plugin in Nomie
     "createNote", // Create a new Note in Nomie
-    "onLaunch", // 
+    "onLaunch", //
     "onNote",
     "getTrackableUsage",
     "searchNotes",
-    "createNote",
     "selectTrackables",
     "getTrackable",
     "getLocation",
   ],
 });
 
-const log = (v1,v2,v3,v4) => {
-  console.log(`👋👋👋 Tester Plugin:`, v1 ? v1 : '', v2 ? v2 : '', v3 ? v3 : '', v4 ? v4 : '');
-}
+const log = (v1, v2, v3, v4) => {
+  console.log(
+    `👋👋👋 Tester Plugin:`,
+    v1 ? v1 : "",
+    v2 ? v2 : "",
+    v3 ? v3 : "",
+    v4 ? v4 : ""
+  );
+};
 
 /**
  * Vue 2.0 App
@@ -30,19 +36,15 @@ const log = (v1,v2,v3,v4) => {
 new Vue({
   data: () => ({
     error: undefined,
-
+    trackables: [],
   }),
   async mounted() {
-    plugin.storage.init().then(()=>{
-      log('✅ Plugin Storage initialized')
-    })
-
     /**
      * On Launch
      * Gets fired each time the user opens Nomie
      */
     plugin.onLaunch(() => {
-      log('✅ Nomie Launched Fired')
+      log("✅ Nomie Launched Fired");
     });
 
     /**
@@ -50,35 +52,64 @@ new Vue({
      * Gets fired when the user opens the plugin modal
      */
     plugin.onUIOpened(async () => {
-      log('✅ Nomie UI Opened Fired')
-      const trackable = await plugin.getTrackable('#mood');
-      log("mood", trackable);
-      const cider = await plugin.getTrackableInput('#cider');
-      const sleep = await plugin.getTrackableInput('#sleep');
-      const mom = await plugin.getTrackableInput('@mom');
-      const mj = await plugin.getTrackableInput('+mj');
-      console.log({cider, sleep, mom, mj});
-      
+      log("✅ Nomie UI Opened Fired");
     });
 
-    /**
-     * When the Plugin is Registered
-     * Check if we have an API key for OpenWeatherMap
-     * if not, prompt the user for the api
-     */
-    // plugin.onRegistered(async () => {
-    //   await plugin.storage.init();
-    //   if (!plugin.storage.getItem('apikey')) {
-    //     const key = await plugin.prompt('OpenWeatherMap API Key',
-    //       `OpenWeatherMap API Required. Get your [FREE API key here](https://home.openweathermap.org/api_keys)`)
-    //     if (key && key.value) {
-    //       plugin.storage.setItem('apikey', key.value);
-    //     }
-    //   }
-    // })
+    plugin.onNote((note) => {
+      log("✅ Nomie onNote Fired");
+      log("Note text", note.note);
+      log("Note Date", note.end);
+      log("Note Score", note.score);
+      log("All Data", note);
+    });
+
+    plugin.onRegistered(async () => {
+      log("✅ Tester Plugin Registered");
+      plugin.storage.init().then(() => {
+        log("✅ Plugin Storage initialized");
+      });
+    });
   },
-  async unmounted() {
-    console.log("unmounted weather");
+  methods: {
+    openURL() {
+      plugin.openURL("https://nomie.app", "Nomie Website");
+    },
+    openTemplate() {
+      plugin.openTemplateURL(`${window.location.origin}/v1/plugins/tester/template-test.json`);
+    },
+    createNote() {
+      plugin.createNote({
+        note: "This is a test note!",
+        score: 3,
+      });
+    },
+    async searchNotes() {
+      const keyword = await plugin.prompt("Search Term");
+      const daysBack = 30;
+      if (keyword.value) {
+        console.log({ keyword });
+        let notes = await plugin.searchNotes(
+          keyword.value,
+          new Date(),
+          daysBack
+        );
+        plugin.alert(`Found ${notes.length} notes`,
+          `There are ${notes.length} notes with the term **${keyword.value}** over the last ${daysBack}`
+        );
+      }
+    },
+    async selectTrackableAndValue() {
+      let selected = await plugin.selectTrackables(undefined, false);
+      if (selected.length) {
+        let trackable = selected[0];
+        console.log({ trackable });
+        let res = await plugin.getTrackableInput(trackable.id);
+        let value = undefined;
+        if (res && res.value) {
+          trackable.value = res.value;
+        }
+        this.trackables.push(trackable);
+      }
+    },
   },
-  methods: {},
 }).$mount("#content");

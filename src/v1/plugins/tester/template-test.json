@@ -1,0 +1,68 @@
+{
+  "type": "template",
+  "id": "11053cbb2c2a8e543eea23dc46933267",
+  "name": "Tester Template",
+  "description": "A template for the tester plugin",
+  "version": "6.0.12",
+  "trackables": [
+    {
+      "type": "tracker",
+      "id": "#tester",
+      "tracker": {
+        "id": "280b95de-4cd4-4019-a155-2b0b6e85d591",
+        "tag": "tester",
+        "label": "Tester",
+        "type": "range",
+        "color": "#8e2cf5",
+        "math": "mean",
+        "ignore_zeros": false,
+        "uom": "num",
+        "emoji": "😉",
+        "avatar": null,
+        "default": "3",
+        "max": "5",
+        "min": "1",
+        "minLabel":"Bad",
+        "maxLabel":"Good",
+        "step": "1",
+        "score": 2,
+        "score_calc": null,
+        "goal": null,
+        "one_tap": false,
+        "include": "",
+        "note": null,
+        "hidden": false,
+        "focus": [
+          "mind",
+          "body"
+        ]
+      },
+      "value": 1
+    }
+  ],
+  "goals": [
+    {
+      "id": "a2c5d031-81a0-48ec-80fa-7072db3de1de",
+      "tag": "#mood",
+      "duration": "day",
+      "target": 5,
+      "comparison": "gte"
+    }
+  ],
+  "boards": [
+    {
+      "id": "ee223ff38b",
+      "label": "Mood",
+      "elements": [
+        "#life_checkup",
+        "#anxiety",
+        "#motivation",
+        "#mood",
+        "#stress"
+      ],
+      "active": true
+    }
+  ],
+  "dashboards": [
+  ]
+}

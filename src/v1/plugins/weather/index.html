@@ -7,37 +7,86 @@
     <title>Nomie Weather Plugin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/v1/nomie-plugin.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
   </head>
   <body class="bg-white dark:bg-gray-800">
-    <div id="content" class="px-6 py-2 flex flex-col items-center">
-
-      <div v-if="error && !currently.temp" class="bg-red-500 w-full px-4 py-2 text-sm text-white mb-5">
+    <div id="content" class="h-screen">
+      <div
+        class="text-gray-500 w-full h-screen flex items-center justify-center"
+        v-if="!currently.temp && !error"
+      >
+        Loading...
+      </div>
+      <div
+        v-if="error && !currently.temp"
+        class="bg-red-500 w-full px-4 py-2 text-sm text-white mb-5"
+      >
         {{error}}
       </div>
 
-      <h1
-        class="text-center outline outline-white dark:outline-black px-6 mt-10 h-20 mx-auto mb-10 rounded-full dark:text-white flex items-center justify-center text-6xl font-extrabold"
+      <!-- Show This when opened as a Modal -->
+      <div
+        v-if="view=='modal' && currently.temp"
+        class="h-screen flex flex-col w-full items-center justify-center space-y-4"
       >
-        {{currently.temp}}°
-      </h1>
-      <!-- <p>{{currently}}</p> -->
-      <ul v-if="currently.temp" class="text-center dark:text-white">
-        <li><strong>Weather for {{currently.name}}</strong></li>
-        <li><strong>Low temp</strong> {{currently.tempLow}}°</li>
-        <li><strong>High temp</strong> {{currently.tempHigh}}°</li>
-        <li><strong>Wind</strong> {{currently.wind}}</li>
-        <li><strong>Cloud Cover</strong> {{currently.clouds}}</li>
-        <li><strong>Pressure</strong> {{currently.pressure}}</li>
-      </ul>
+        <h1
+          class="text-center px-6 py-2 mx-auto rounded-full bg-indigo-600 shadow-2xl text-white flex items-center justify-center text-6xl font-extrabold"
+        >
+          {{currently.temp}}°
+        </h1>
+        <!-- <p>{{currently}}</p> -->
+        <ul
+          v-if="currently.temp"
+          class="text-center dark:text-white flex flex-col space-y-2"
+        >
+          <li class="text-xs mb-4 uppercase">
+            <strong>{{currently.name}}</strong>
+          </li>
+          <li class="grid grid-cols-2 gap-4 mb-2 text-center text-sm">
+            <div>
+              <div class="text-xl font-semibold">{{currently.tempLow}}°</div>
+              <div>↓ Low</div>
+            </div>
+            <div>
+              <div class="text-xl font-semibold">{{currently.tempHigh}}°</div>
+              <div>↑ High</div>
+            </div>
+          </li>
+          <li class="border-t border-gray-500 border-opacity-40" />
+          <li><strong>💨 Wind</strong> {{currently.wind}}</li>
+          <li><strong>⛅️ Clouds</strong> {{currently.clouds}}</li>
+          <li><strong>🏋️‍♀️ Pressure</strong> {{currently.pressure}}</li>
+        </ul>
 
-      <button v-if="currently.temp"
-        class="mx-auto block mt-5 py-1 px-2 text-xs rounded-md bg-pink-500 text-white"
-        @click="trackWeather"
+        <button
+          class="mx-auto block mt-5 py-1 px-2 text-xs rounded-md bg-pink-500 text-white"
+          @click="trackWeather"
+        >
+          Track Again
+        </button>
+      </div>
+
+      <!-- Show this when viewed as a Widget -->
+      <div
+        v-if="view=='widget' && currently.temp"
+        class="flex justify-center h-screen w-screen items-center space-x-2 h-full"
       >
-        Track Again
-      </button>
+        <section class="flex flex-col items-center justify-center space-y-2">
+          <h1 class="text-3xl font-bold dark:text-white">
+            {{currently.temp}}°
+          </h1>
+          <div class="text-xs dark:text-gray-200 text-gray-600">
+            {{currently.name}}
+          </div>
+        </section>
+        <!-- <p>{{currently}}</p> -->
+        <ul v-if="currently.temp" class="text-center text-xs dark:text-white">
+          <li><strong>Low </strong> {{currently.tempLow}}°</li>
+          <li><strong>High </strong> {{currently.tempHigh}}°</li>
+          <li><strong>Wind</strong> {{currently.wind}}</li>
+          <li><strong>Cloud</strong> {{currently.clouds}}</li>
+        </ul>
+      </div>
     </div>
 
     <script src="/v1/plugins/weather/weather.js"></script>

@@ -10,10 +10,54 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
   </head>
   <body class="bg-white dark:bg-gray-800">
-    <div id="content" class="px-6 py-2 flex flex-col items-center text-pink-500" id="app">
-      Hello world!
-    </div>
+    <div
+      id="content"
+      class="h-screen px-6 py-2 space-y-4 flex flex-col justify-center items-center text-pink-500"
+      id="app"
+    >
+      <div class="grid grid-cols-2 gap-4 flex-grow-0 ">
+        <button
+          @click="openURL()"
+          class="w-full bg-blue-500  text-white py-2 px-4 rounded-md"
+        >
+          Open URL
+        </button>
+        <button
+          @click="selectTrackableAndValue()"
+          class="w-full bg-blue-500  text-white py-2 px-4 rounded-md"
+        >
+          Select Tracker
+        </button>
+        <button
+        @click="createNote()"
+        class="w-full bg-blue-500  text-white py-2 px-4 rounded-md"
+      >
+        Create Note
+      </button>
+      <button
+        @click="searchNotes()"
+        class="w-full bg-blue-500  text-white py-2 px-4 rounded-md"
+      >
+        Search Notes
+      </button>
+      <button
+        @click="openTemplate()"
+        class="w-full bg-blue-500  text-white py-2 px-4 rounded-md"
+      >
+        Open Template
+      </button>
+      </div>
 
-    <script src="/plugins/tester/tester.js"></script>
+      <ul class="grid w-full grid-cols-1 gap-4 dark:text-white">
+        <li
+          v-for="trackable in trackables"
+          class="px-4 py-1 flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-md"
+        >
+          <span>{{trackable.id}}</span>
+          <span>{{trackable.value}}</span>
+        </li>
+      </ul>
+    </div>
+    <script src="/v1/plugins/tester/tester.js"></script>
   </body>
 </html>

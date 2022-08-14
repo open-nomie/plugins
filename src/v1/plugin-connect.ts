@@ -1,8 +1,8 @@
-
 export type PluginUseTypes =
   | "trackablesSelected"
   | "selectTrackables"
   | "onUIOpened"
+  | "onWidget"
   | "registered"
   | "onLaunch"
   | "openURL"
@@ -43,12 +43,15 @@ type UserPrefs = {
   theme: "dark" | "light" | "system";
 };
 
+
+
 /* It takes a plugin object as an argument, and
 provides a set of methods that can be used to communicate with the Nomie app */
 export class NomiePlugin {
   pluginDetails: PluginType;
   registered: boolean;
   pid: undefined | string;
+  lid: undefined | string;
   listeners: any;
   ready: boolean;
   storage: any;
@@ -58,6 +61,7 @@ export class NomiePlugin {
     this.pluginDetails = { ...starter };
     this.registered = false;
     this.pid = undefined;
+    this.lid = undefined;
     this.listeners = {};
     this.ready = false;
     this.storage = new NomieStorage(this, "prefs");
@@ -74,13 +78,11 @@ export class NomiePlugin {
         this.ready = true;
         this.pid = this.getPid();
       }
-      await this.storage.init();
     };
 
     fireReady();
     this.register();
   }
-
 
   /**
    * It returns a promise that resolves to an array of notes
@@ -97,6 +99,7 @@ export class NomiePlugin {
         date,
         daysBack,
         id,
+        lid: this.lid
       });
       this.listeners[id] = (payload: any) => {
         resolve(payload.results);
@@ -151,6 +154,12 @@ export class NomiePlugin {
     }, 300);
   }
 
+  openURL(url: string, title: string) {
+    this.broadcast('openURL', {
+      url, title
+    })
+  }
+
   _fireListeners(key: string, payload: any) {
     (this.listeners[key] || []).forEach((func: Function) => {
       func(payload);
@@ -168,27 +177,33 @@ export class NomiePlugin {
       case "registered":
         this.registered = true;
         this.pid = payload.id;
+        this.lid = payload.lid;
         this.prefs = { ...payload.user };
         this._fireListeners("onRegistered", this);
         break;
       case "onUIOpened":
         this._fireListeners("onUIOpened", this);
         break;
+      case "onWidget":
+        this._fireListeners("onWidget", this);
+        break;
       case "onNote":
         this._fireListeners("onNote", payload);
         break;
       case "onLaunch":
-        this.registered = true;
         setTimeout(() => {
           this._fireListeners("onLaunch", payload);
-        }, 300);
+        }, 400);
         break;
       case "promptReply":
         this.listenerResponse(payload);
         break;
+      case "alertReply":
+        this.listenerResponse(payload);
+        break;
       case "getTrackableReply":
-          this.listenerResponse(payload);
-          break;
+        this.listenerResponse(payload);
+        break;
       case "getTrackableUsageReply":
         this.listenerResponse(payload);
         break;
@@ -219,7 +234,7 @@ export class NomiePlugin {
    * @returns A string that is a combination of the type and a random number.
    */
   private toId(type: string): string {
-    return `${type.replace(/[^a-z0-9]/gi, '')}-${Math.random().toString(16)}`;
+    return `${type.replace(/[^a-z0-9]/gi, "")}-${Math.random().toString(16)}`;
   }
 
   /**
@@ -250,12 +265,12 @@ export class NomiePlugin {
    * @param {string} tag - The tag of the trackable you want to get.
    * @returns A promise that resolves to the trackable object.
    */
-  getTrackable(tag:string) {
+  getTrackable(tag: string) {
     return new Promise((resolve) => {
       let id = this.toId(`trackable-${tag}`);
       const payload = {
         id,
-        tag
+        tag,
       };
       this.broadcast("getTrackable", payload);
       this.addResponseListener(id, resolve);
@@ -264,18 +279,18 @@ export class NomiePlugin {
 
   /**
    * "Get the value of a trackable input with the given tag."
-   * 
+   *
    * The first thing we do is create a promise. This is a promise that will be resolved with the value
    * of the trackable input
    * @param {string} tag - The tag of the trackable input you want to get the value of.
    * @returns A promise that resolves to the value of the trackable input.
    */
-  getTrackableInput(tag:string) {
+  getTrackableInput(tag: string) {
     return new Promise((resolve) => {
       let id = this.toId(`trackable-value-${tag}`);
       this.broadcast("getTrackableInput", {
         id,
-        tag
+        tag,
       });
       this.addResponseListener(id, resolve);
     });
@@ -324,6 +339,25 @@ export class NomiePlugin {
     });
   }
 
+  alert(title: string, message?: string) {
+    return new Promise((resolve, reject) => {
+      let id = this.toId("prompt");
+      this.broadcast("alert", {
+        title,
+        message,
+        id,
+      });
+      // this.addResponseListener(id, resolve)
+      this.addResponseListener(id, resolve);
+    });
+  }
+  
+  openTemplateURL(url:string) {
+    this.broadcast('openTemplateURL', {
+      url  
+    })
+  }
+
   /**
    * The function returns a promise that resolves when the user clicks the confirm button
    * @param {string} title - The title of the modal
@@ -363,11 +397,13 @@ export class NomiePlugin {
    * @returns A promise that resolves to the value of the key in the storage.
    */
   getStorageItem(key: string): Promise<any> {
+
     return new Promise((resolve, reject) => {
       let id = this.toId(`storage-get-${key}`);
       this.broadcast("getStorageItem", {
         key,
         id,
+        lid: this.lid,
       });
       this.addResponseListener(id, resolve);
     });
@@ -400,10 +436,14 @@ export class NomiePlugin {
   broadcast(action: string, payload: any) {
     const pid = this.getPid();
     if (window.parent) {
-      window.parent.postMessage(
-        { action, data: { ...payload, ...{ pid } } },
-        "*"
-      );
+      const message = {
+        action,
+        data: { ...payload, ...{ pid, lid: this.lid } },
+      };
+      if (!this.lid && action !== "register") {
+        console.error(`No LID for ${action}`, payload);
+      }
+      window.parent.postMessage(message, "*");
     }
   }
 
@@ -419,8 +459,19 @@ export class NomiePlugin {
    * It adds a listener to the event 'onUIOpened'
    * @param {Function} func - Function - The function to be called when the event is triggered.
    */
-  onUIOpened(func: Function): void {
+  onUIOpened(func: Function) {
     this.on("onUIOpened", func);
+    return this.off("onUIOpened", func);
+  }
+
+  /**
+   * A function that takes a function as an argument and returns a function.
+   * @param {Function} func - Function - The function to be called when the event is triggered.
+   * @returns A function that removes the event listener.
+   */
+  onWidget(func: Function) {
+    this.on("onWidget", func);
+    return this.off("onWidget", func);
   }
 
   /**
@@ -428,8 +479,9 @@ export class NomiePlugin {
    * function as arguments
    * @param {Function} func - Function - The function to be called when the event is triggered.
    */
-  onNote(func: Function): void {
+  onNote(func: Function) {
     this.on("onNote", func);
+    return this.off("onNote", func);
   }
 
   /**
@@ -437,8 +489,9 @@ export class NomiePlugin {
    * onLaunch and the function as the argument
    * @param {Function} func - Function
    */
-  onLaunch(func: Function): void {
+  onLaunch(func: Function) {
     this.on("onLaunch", func);
+    return this.off("onLaunch", func);
   }
 
   /**
@@ -446,8 +499,9 @@ export class NomiePlugin {
    * function as arguments
    * @param {Function} func - Function - The function to be called when the event is triggered.
    */
-  onRegistered(func: Function): void {
+  onRegistered(func: Function) {
     this.on("onRegistered", func);
+    return this.off("onRegistered", func);
   }
 
   /**
@@ -461,6 +515,21 @@ export class NomiePlugin {
     if (!this.listeners[eventName].includes(func)) {
       this.listeners[eventName].push(func);
     }
+  }
+
+  /**
+   * It removes a function from the array of functions that are called when an event is triggered
+   * @param {string} name - The name of the event.
+   * @param {Function} func - The function to be called when the event is triggered.
+   */
+  off(name: string, func: Function) {
+    return () => {
+      if (this.listeners[name]) {
+        this.listeners[name] = this.listeners[name].filter((d: Function) => {
+          return d !== func;
+        });
+      }
+    };
   }
 
   /**
@@ -480,13 +549,13 @@ export class NomieStorage {
   plugin: NomiePlugin;
   data: any = {};
   filename: string;
-  
+
   constructor(plugin: NomiePlugin, filename: string = "prefs") {
     this.plugin = plugin;
     this.filename = filename;
     this.data = {};
   }
-  
+
   /**
    * > The `init` function loads the data from the storage plugin and sets the `data` property
    * @returns The NomieStorage object
@@ -496,7 +565,7 @@ export class NomieStorage {
     if (raw && raw.value) this.data = raw.value;
     return this;
   }
-  
+
   /**
    * It returns the value of the key in the data object
    * @param {string} key - The key of the item to get.
@@ -505,7 +574,7 @@ export class NomieStorage {
   getItem(key: string): any {
     return this.data[key];
   }
-  
+
   /**
    * It sets the value of the key in the data object, and then saves the data object to the file
    * @param {string} key - The key of the item to set.
