@@ -6,9 +6,17 @@ Nomie Plugins allows people who are familiar with HTML and Javascript to create 
 
 Nomie Plugins use iframes to load and communicate with “plugins”. So this really just means, a plugin is a hosted HTML page, that has some extra javascript to request data to and from Nomie. We do this by using postMessage and window.onMessage to securely pass data between Nomie and your Plugin. 
 
-### Step 1. Include the nomie-plugin.js
+### Resources
 
-This library is used to abstract the responsibility of posting messages and listening for messages, into simple async calls. This document outlines the specific functions of `nomie-plugin.js`. 
+**Repo** [https://github.com/open-nomie/plugins](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester)
+
+**Website**: [https://nomie.app](https://nomie.app/) 
+
+# nomie-plugin.js
+
+This library abstracts the responsibility of posting messages and listening for messages into simple async calls. This document outlines the specific functions of `nomie-plugin.js`. 
+
+### Including the nomie-plugin.js library
 
 ```jsx
 <script src="https://plugins.nomie.app/v1/nomie-plugin.js">
@@ -90,7 +98,7 @@ plugin.onNote((note)=>{
 	console.log("Note text", note.note)
 	console.log("Note Date", note.end)
 	console.log("Note Score", note.score)
-	console.log("Note Tokens (raw trackable data)", note.tokens)
+	console.log("Note Elements (raw trackable data)", note.elements)
 })
 ```
 
@@ -105,6 +113,14 @@ const location = await plugin.getLocation();
 if(location) {
 	console.log(`User is located at ${location.lat},${location.lng}`)
 }
+```
+
+### plugin.openTemplateURL(url)
+
+Open the URL of a template within Nomie. 
+
+```jsx
+plugin.openTemplateURL('https://6.nomie.app/templates/adhd-template.json');
 ```
 
 ### plugin.getTrackableUsage({tag, endDate, daysBack })
@@ -209,7 +225,7 @@ if(res.value) {
 }
 ```
 
-### confirm.prompt(title, message)
+### plugin.confirm(title, message)
 
 Ask the user to confirm an action - for example:  Save this Item? 
 
@@ -222,6 +238,15 @@ if(res.value) {
 }
 ```
 
+### plugin.alert(title, message)
+
+Alert the user that something happened. It’s a better experience than just the browsers default alert()
+
+```jsx
+plugin.alert('This item was deleted', 'It is gone forever.');
+
+```
+
 ### openURL(url, title)
 
 Open any URL in a modal within Nomie. 
@@ -229,6 +254,8 @@ Open any URL in a modal within Nomie.
 ```jsx
 plugin.openURL('https://nomie.app')
 ```
+
+---
 
 # User Preferences
 
@@ -244,17 +271,18 @@ console.log(`The week starts on ${plugin.prefs.weekStarts}`);
 - `plugin.prefs.**useMetric**`: true or false - does the user prefer metric
 - `plugin.prefs.**weekStarts**`: sunday or monday - first day of the week
 
+---
+
 # Storage
 
 The Nomie Plugin supports reading and writing to a users Nomie storage engine - within an enclosed folder in the `storage/plugins/{pluginId}`
 
 ### plugin.storage.init()
 
-The storage class needs to be initialized which is async, this will pull the latest data and store it in memory. 
+The storage class **needs to be initialized** which is async, this will pull the latest data and store it in memory. 
 
 ```jsx
 await plugin.storage.init()
-let key = plugin.storage.getItem('weather-api-key');
 ```
 
 ### plugin.storage.getItem(key)
@@ -274,7 +302,9 @@ Storage setItem works just like localStorage, except you can save entire javascr
 plugin.storage.setItem('weather-api-key', 12345678);
 ```
 
-## Example Plugins
+---
+
+# Example Plugins
 
 You can try out the example plugins by copying and pasting the URL provided below in to Nomie’s Plugin manager (More Tab → Plugins)
 
@@ -282,14 +312,32 @@ You can try out the example plugins by copying and pasting the URL provided belo
 
 Track the weather one time each day. This plugin will ask the user to get a free API key from OpenWeatherMap, and will record the weather one time a day.  
 
-URL for Nomie:  https://plugins.nomie.app/v1/plugins/weather
+**URL for Nomie**:  `https://plugins.nomie.app/v1/plugins/weather`
+
+**Code**: [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather)
 
 ### Tester
 
 Will test different features and functions of `nomie-plugin.js` this is completely unhelpful for non-technical people 
 
-URL for Nomie:  https://plugins.nomie.app/v1/plugins/tester
+**URL for Nomie**:  `https://plugins.nomie.app/v1/plugins/tester`
 
-Questions? support@happydata.org 
+**Code**: [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester)
 
-Copyright 2022 All Rights Reserved. [Happy Data, LLC](https://happydata.org)
+---
+
+# Installing a Plugin
+
+1. Go to the More Tab
+2. Select Plugins
+3. Click the + or Add Custom Plugin 
+4. Provide the url for the plugin
+5. Tap Install Plugin
+
+---
+
+Qestions? support@happydata.org 
+
+**Copyright 2022 All Rights Reserved.** [Happy Data, LLC](https://happydata.org)
+
+[https://nomie.app](https://nomie.app)
