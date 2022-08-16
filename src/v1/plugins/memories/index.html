@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nomie Weather Plugin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/v1/nomie-plugin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+  </head>
+  <body class="bg-gray-200 dark:bg-gray-700">
+    <div
+      id="content"
+      class="min-h-screen space-y-4 flex flex-col"
+      id="app"
+    >
+      <section v-if="loading" class="text-gray-500 flex items-center px-4 justify-center h-80" >
+        Looking for Memories on this day...
+      </section>
+      <section v-if="!years.length && !loading" class="text-gray-500 flex items-center px-4 justify-center h-80" >
+        No Memories found on this day.
+      </section>
+      <section class="years" v-for="yearPayload in years">
+        <h1 class="sticky text-center top-0 z-50 px-4 py-2 bg-gray-200 dark:bg-gray-800 p-2 text-2xl font-bold text-gray-800 dark:text-gray-200">
+          <div>{{yearPayload.date.fromNow()}}</div>
+          <p class="text-xs text-gray-800 dark:text-white">
+            {{yearPayload.date.format('ddd Do MMM YYYY')}}
+          </p>
+        </h1>
+        <div class="p-4">
+          <section v-for="entry in yearPayload.notes" class="mb-4">
+            <header class="flex px-2 mb-2 items-center justify-between space-x-2">
+              <span class="text-gray-600 dark:text-gray-300">
+               {{plugin.dayjs(entry.end).format(plugin.prefs.use24hour ? 'H:mm' : 'h:mm a')}}
+              </span>
+              <span class="text-3xl" v-if="entry.score">
+               <span v-if="entry.score == 1">🙂</span>
+               <span v-if="entry.score > 1">🥳</span>
+               <span v-if="entry.score == -1">🙁</span>
+               <span v-if="entry.score < -1">😡</span>
+              </span>
+             </header>
+            <div class="card overflow-hidden p-4 leading-normal bg-white dark:bg-gray-900 rounded-lg">
+               <p class="dark:text-white text-xl">
+                 {{entry.note}}
+               </p>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      
+    </div>
+    <script src="/v1/plugins/memories/memories.js"></script>
+  </body>
+</html>

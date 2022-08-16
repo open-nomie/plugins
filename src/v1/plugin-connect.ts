@@ -1,7 +1,12 @@
+import { Dayjs } from "dayjs";
+import dayjs from "../lib/dayjs";
+
+
 export type PluginUseTypes =
   | "trackablesSelected"
   | "selectTrackables"
   | "onUIOpened"
+  | "openNoteEditor"
   | "onWidget"
   | "registered"
   | "onLaunch"
@@ -26,6 +31,7 @@ export type PluginType = {
   active: boolean;
   uses: Array<PluginUseTypes>;
   error?: string;
+  dayjs: Dayjs
 };
 
 type getTrackableUsageProps = {
@@ -56,6 +62,7 @@ export class NomiePlugin {
   ready: boolean;
   storage: any;
   prefs?: UserPrefs;
+  dayjs: Dayjs;
 
   constructor(starter: PluginType) {
     this.pluginDetails = { ...starter };
@@ -65,7 +72,7 @@ export class NomiePlugin {
     this.listeners = {};
     this.ready = false;
     this.storage = new NomieStorage(this, "prefs");
-
+    this.dayjs = dayjs;
     const fireReady = async () => {
       if (!this.ready) {
         window.addEventListener(
@@ -105,6 +112,20 @@ export class NomiePlugin {
         resolve(payload.results);
       };
     });
+  }
+
+  openNoteEditor(note: any) {
+    let openNote:any;
+    if(typeof note == 'string') {
+      openNote = { note };
+    } else if(typeof note == 'object') {
+      openNote = note;
+    }
+    if(openNote) {
+      this.broadcast("openNoteEditor", {
+        note: openNote
+      })
+    }
   }
 
   /**

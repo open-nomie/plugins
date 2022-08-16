@@ -8,7 +8,7 @@ Nomie Plugins use iframes to load and communicate with “plugins”. So this re
 
 ### Resources
 
-**Repo** [https://github.com/open-nomie/plugins](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester)
+**Repo** [https://github.com/open-nomie/plugins](https://github.com/open-nomie/plugins/) 
 
 **Website**: [https://nomie.app](https://nomie.app/) 
 
@@ -214,6 +214,16 @@ plugin.onRegistered(async () => {
 })
 ```
 
+### plugin.openNoteEditor(str | noteObject)
+
+Open up Nomie’s full size Note editor for a given note. 
+
+```jsx
+plugin.openNoteEditor("Just as a string");
+// or
+plugin.openNoteEditor({ note: 'this is a note', lat: 34, lng: -81, score: 2 })
+```
+
 ### plugin.prompt(title, message)
 
 Request a value from the User. This will bring up Nomie’s prompt alert box with an input field where the user can input a response. 
@@ -315,6 +325,14 @@ Track the weather one time each day. This plugin will ask the user to get a free
 **URL for Nomie**:  `https://plugins.nomie.app/v1/plugins/weather`
 
 **Code**: [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather)
+
+### Memories
+
+View this days note for every year you’ve used Nomie. 
+
+**URL for Nomie**: `https://plugins.nomie.app/v1/plugins/memories`
+
+**Code**: [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/memories](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/memories)
 
 ### Tester
 

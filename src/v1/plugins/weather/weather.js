@@ -8,7 +8,7 @@ const plugin = new NomiePlugin({
   addToWidgets: true,
   emoji: "⛈",
   version: "1.0",
-  description: "Get todays weather for your current location",
+  description: `Track the weather with OpenWeatherMap. Using your location, this plugin will track the weather one time a day, as long as you open Nomie. **Note** this does require an API key from OpenWeatherMaps.`,
   uses: ["createNote", "onLaunch", "getLocation"],
 });
 
@@ -34,7 +34,7 @@ const getCurrentConditions = async (location, apikey) => {
     weatherData.name = data.name;
     weatherData.tempHigh = data.main.temp_max;
     weatherData.tempLow = data.main.temp_min;
-    weatherData.feelsLike = data.main.feels_lik;
+    weatherData.feelsLike = data.main.feels_like;
     weatherData.clouds = data.clouds?.all;
     weatherData.pressure = data.main.pressure;
     weatherData.wind = data.wind?.speed;
@@ -196,9 +196,10 @@ new Vue({
       const currently = await this.getWeatherCached();
       if (currently) {
         return {
-          note: `#temp(${currently.temp}) #tempHigh(${currently.tempHigh}) #tempLow(${currently.tempLow}) #clouds(${currently.clouds}) #wind(${currently.wind}) #pressure(${currently.pressure})`,
+          note: `#temp(${currently.temp}) #temp_high(${currently.tempHigh}) #temp_low(${currently.tempLow}) #clouds(${currently.clouds}) #wind(${currently.wind}) #pressure(${currently.pressure})`,
           lat: currently.latitude,
           lng: currently.longitude,
+          location: currently.name
         };
       }
       return undefined;
