@@ -1,6 +1,6 @@
-# Nomie Plugins [WIP]
+# Nomie 6 Plugins [WIP]
 
-Nomie Plugins allows people who are familiar with HTML and Javascript to create entirely new methods of tracking and monitoring data within Nomie 6.
+Nomie Plugins allows people who are familiar with HTML and Javascript to create entirely new methods of tracking and monitoring data within Nomie 6. 
 
 ## Introduction
 
