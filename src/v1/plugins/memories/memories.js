@@ -12,15 +12,6 @@ const plugin = new NomiePlugin({
   ],
 });
 
-const log = (v1, v2, v3, v4) => {
-  console.log(
-    `👋👋👋 Tester Plugin:`,
-    v1 ? v1 : "",
-    v2 ? v2 : "",
-    v3 ? v3 : "",
-    v4 ? v4 : ""
-  );
-};
 
 /**
  * Vue 2.0 App
@@ -28,10 +19,9 @@ const log = (v1, v2, v3, v4) => {
 new Vue({
   data: () => ({
     error: undefined,
-    notes: [],
+    years: [],
     now: plugin.dayjs(),
     mode: 'hidden',
-    years: [],
     loading: true
   }),
   async mounted() {
@@ -40,13 +30,11 @@ new Vue({
      * Gets fired when the user opens the plugin modal
      */
     plugin.onUIOpened(async () => {
-      log("✅ Nomie UI Opened Fired");
       this.mode = 'modal';
       this.loadMemories();
     });
 
     plugin.onWidget(async () => {
-      log("✅ Nomie Widget Opened");
       this.mode = 'widget';
     });
 
