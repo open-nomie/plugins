@@ -21,7 +21,7 @@ const plugin = new NomiePlugin({
  */
 const getCurrentConditions = async (location, apikey) => {
   // Determine user Units
-  const units = plugin.prefs?.useMetric ? "metric" : "imperial";
+  const units = !plugin.prefs?.useMetric ? "imperial" : "metric";
   // Call Open Weather Map
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lng}&appid=${apikey}&units=${units}`;
   const call = await fetch(url);
@@ -153,9 +153,8 @@ new Vue({
      
       try {
         let fromCache = plugin.storage.getItem("last-weather-lookup");
-
-       
-        let lookupData = fromCache || {};
+        // let lookupData = fromCache || {};
+        let lookupData = {};
         let cached = undefined;
 
         // Have lookup data?
