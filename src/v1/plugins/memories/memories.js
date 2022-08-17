@@ -22,8 +22,19 @@ new Vue({
     years: [],
     now: plugin.dayjs(),
     mode: 'hidden',
-    loading: true
+    loading: true,
+    status: ''
   }),
+  computed: {
+    yearsArray() {
+      const arrayMap = Object.keys(this.years).map((year)=>{
+        return this.years[year];
+      }).sort((a,b)=>{
+        return a.year < b.year ? 1 : -1
+      })
+      return arrayMap
+    }
+  },
   async mounted() {
     /**
      * on UI Opened
@@ -45,19 +56,32 @@ new Vue({
     },
     async loadMemories() {
       this.loading = true;
+      this.status = 'Looking...';
       let maxEmpty = 3;
       let empties = 0;
       let maxYear = 2014;
-      let endYear = parseInt(this.now.format('YYYY'));
+      const endDate = this.now.subtract(1,'year');
+      let endYear = parseInt(endDate.format('YYYY'));
       let years = {};
+      
+      // Loop over the years 
       for(let i=0;i<endYear - maxYear;i++) {
+        // Only run if we have less than Max Empty
         if(empties <= maxEmpty) {
-          let date = plugin.dayjs().subtract(i,'years');
+
+          // Get last years date
+          let date = endDate.subtract(i,'years');
+          // Set Status
+          this.status = `Looking at ${date.format('YYYY')}`
+          // Get Notes for Date
           let notes = await this.getNotes(date);
+          // If no notes - increase empty 
           if(notes.length === 0) {
             empties = empties + 1;
           } else {
+            // Filter out just notes 
             let justNotes = notes.filter(n=>n.hasNote);
+            // If we have some add them to year map
             if(justNotes.length) {
               let year = date.format('YYYY');
               years[year] = years[year] || {
@@ -70,16 +94,22 @@ new Vue({
           }
         }
       }
+
+      // Order years by newest first
       this.years = Object.keys(years).map((year)=>{
         return years[year];
       }).sort((a,b)=>{
         return a.year < b.year ? 1 : -1
       })
+      
+      // Clear Status
+      this.status = '';
       this.loading = false;
     },  
     async getNotes(date) {
-      const notes = await plugin.searchNotes('', date.toDate(), 1);
+      const notes = await plugin.searchNotes('', date.toDate(), 0);
       return notes;
     }
   },
+  
 }).$mount("#content");
