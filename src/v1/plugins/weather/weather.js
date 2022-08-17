@@ -152,9 +152,9 @@ new Vue({
     async getWeatherCached() {
      
       try {
-        let fromCache = plugin.storage.getItem("last-weather-lookup");
-        // let lookupData = fromCache || {};
-        let lookupData = {};
+        let fromCache = plugin.storage.getItem("last-weather");
+        let lookupData = fromCache || {};
+        // let lookupData = {};
         let cached = undefined;
 
         // Have lookup data?
