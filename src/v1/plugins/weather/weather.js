@@ -179,7 +179,7 @@ new Vue({
               // If we have a temp - we're good to go
               if (weather.temp) {
                 // Save to Plugin storage in Nomie
-                await plugin.storage.setItem("last-weather-lookup", weather);
+                await plugin.storage.setItem("last-weather", weather);
               }
             }
             cached = weather;
