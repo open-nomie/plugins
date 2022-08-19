@@ -15,7 +15,7 @@
       class="min-h-screen space-y-4 flex flex-col"
       id="app"
     >
-      <section v-if="loading" class="text-gray-500 flex items-center px-4 justify-center h-80" >
+      <section v-if="loading" class="text-gray-500 flex flex-col items-center px-4 justify-center h-80" >
         Looking for Memories on this day...
         <section v-if="status.length" class="pt-2 text-xs font-bold" >
           {{status}}
