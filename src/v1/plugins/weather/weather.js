@@ -163,8 +163,10 @@ new Vue({
      * Gets fired each time the user opens Nomie
      */
     plugin.onLaunch(() => {
-      this.view = 'hidden';
-      this.loadWeather();
+      setTimeout(()=>{
+        this.view = 'hidden';
+        this.loadWeather();
+      }, 500);
     });
 
     /**
