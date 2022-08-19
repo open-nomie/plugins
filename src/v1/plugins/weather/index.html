@@ -29,33 +29,48 @@
         v-if="view=='modal' && currently.temp"
         class="h-screen flex flex-col w-full items-center justify-center space-y-4"
       >
-        <h1
-          class="text-center px-6 py-2 mx-auto rounded-full bg-indigo-600 shadow-2xl text-white flex items-center justify-center text-6xl font-extrabold"
-        >
-          {{currently.temp}}°
-        </h1>
-        <!-- <p>{{currently}}</p> -->
+ 
+        <p class="dark:text-white opacity-50 text-sm">{{currently.dateString}}</p>
+        <p class="dark:text-white font-bold leading-tight text-4xl mb-6">{{currently.description}} Today</p>
+
         <ul
           v-if="currently.temp"
-          class="text-center dark:text-white flex flex-col space-y-2"
+          class=" dark:text-white flex flex-col space-y-2"
         >
-          <li class="text-xs mb-4 uppercase">
-            <strong>{{currently.name}}</strong>
-          </li>
           <li class="grid grid-cols-2 gap-4 mb-2 text-center text-sm">
             <div>
-              <div class="text-xl font-semibold">{{currently.tempLow}}°</div>
+              <div class="text-xl font-semibold">{{currently.temp_low}}°</div>
               <div>↓ Low</div>
             </div>
             <div>
-              <div class="text-xl font-semibold">{{currently.tempHigh}}°</div>
+              <div class="text-xl font-semibold">{{currently.temp}}°</div>
               <div>↑ High</div>
             </div>
           </li>
-          <li class="border-t border-gray-500 border-opacity-40" />
-          <li><strong>💨 Wind</strong> {{currently.wind}}</li>
-          <li><strong>⛅️ Clouds</strong> {{currently.clouds}}</li>
-          <li><strong>🏋️‍♀️ Pressure</strong> {{currently.pressure}}</li>
+          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+            <strong class="mr-2"> 🌞 Day Length </strong>
+            <span>{{currently.day_length}}</span>
+          </li>
+          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+            <strong class="mr-2"> 🏋️‍♀️ Pressure </strong>
+            <span>{{currently.pressure}}</span>
+          </li>
+          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+            <strong class="mr-2"> 💨 Wind Speed </strong>
+            <span>{{currently.wind_speed}}</span>
+          </li>
+          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+            <strong class="mr-2"> 🌥 Clouds </strong>
+            <span>{{currently.clouds}}</span>
+          </li>
+          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+            <strong class="mr-2"> 💧 Humidity </strong>
+            <span>{{currently.humidity}}</span>
+          </li>
+          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+            <strong class="mr-2"> 🌧 Precipitation </strong>
+            <span>{{currently.precipitation}}</span>
+          </li>
         </ul>
 
         <button
@@ -80,12 +95,12 @@
           </div>
         </section>
         <!-- <p>{{currently}}</p> -->
-        <ul v-if="currently.temp" class="text-center text-xs dark:text-white">
-          <li><strong>Low </strong> {{currently.tempLow}}°</li>
-          <li><strong>High </strong> {{currently.tempHigh}}°</li>
-          <li><strong>Wind</strong> {{currently.wind}}</li>
-          <li><strong>Cloud</strong> {{currently.clouds}}</li>
-        </ul>
+        <ul v-i class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"f="currently.temp" class="text-center text-xs dark:text-white">
+          <li>< class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"strong class="mr-2">Low </strong> {{currently.tempLow}}°</li>
+          <span><li>< class="flex items-center justify-between </span>border-t border-gray-500 border-opacity-40 pt-2"strong class="mr-2">High </strong> {{currently.tempHigh}}°</li>
+          <span><li>< class="flex items-center justify-between </span>border-t border-gray-500 border-opacity-40 pt-2"strong class="mr-2">Wind</strong> {{currently.wind}}</li>
+          <span><li><strong class="mr-2">Cloud</strong> {{cur</span>rently.clouds}}</li>
+        <span></ul></span>
       </div>
     </div>
 
