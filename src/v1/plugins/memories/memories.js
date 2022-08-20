@@ -3,7 +3,7 @@ const plugin = new NomiePlugin({
   name: "Memories",
   addToCaptureMenu: true,
   addToMoreMenu: false,
-  addToWidgets: true,
+  addToWidgets: false,
   emoji: "📆",
   version: "1.0",
   description: "Multi-year Nomie users can quickly see what happened on this day in your Nomie history",
@@ -47,6 +47,7 @@ new Vue({
 
     plugin.onWidget(async () => {
       this.mode = 'widget';
+      this.loadMemories();
     });
 
   },

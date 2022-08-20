@@ -12,7 +12,8 @@
   <body class="bg-white dark:bg-black">
     <div id="content" class="h-screen">
       <div
-        class="text-gray-500 w-full h-screen flex items-center justify-center"
+        :class="{ 'items-center': view = 'modal' }"
+        class="text-gray-500 w-full h-screen flex justify-center"
         v-if="!currently.temp && !error"
       >
         Loading...
@@ -26,8 +27,9 @@
 
       <!-- Show This when opened as a Modal -->
       <div
-        v-if="view=='modal' && currently.temp"
-        class="h-screen flex flex-col w-full items-center justify-center space-y-4"
+        v-if="currently.temp"
+        :class="{ 'justify-center': view == 'modal' }"
+        class="h-screen py-4 flex flex-col items-center w-full space-y-4"
       >
  
         <p class="dark:text-white opacity-50 text-sm">{{currently.dateString}}</p>
@@ -35,7 +37,7 @@
 
         <ul
           v-if="currently.temp"
-          class=" dark:text-white flex flex-col space-y-2"
+          class=" dark:text-white flex flex-col space-y-2 px-4 w-full" style="max-width:400px;"
         >
           <li class="grid grid-cols-2 gap-4 mb-2 text-center text-sm">
             <div>
@@ -81,27 +83,6 @@
         </button>
       </div>
 
-      <!-- Show this when viewed as a Widget -->
-      <div
-        v-if="view=='widget' && currently.temp"
-        class="flex justify-center h-screen w-screen items-center space-x-2 h-full"
-      >
-        <section class="flex flex-col items-center justify-center space-y-2">
-          <h1 class="text-3xl font-bold dark:text-white">
-            {{currently.temp}}°
-          </h1>
-          <div class="text-xs dark:text-gray-200 text-gray-600">
-            {{currently.name}}
-          </div>
-        </section>
-        <!-- <p>{{currently}}</p> -->
-        <ul v-i class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"f="currently.temp" class="text-center text-xs dark:text-white">
-          <li>< class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"strong class="mr-2">Low </strong> {{currently.tempLow}}°</li>
-          <span><li>< class="flex items-center justify-between </span>border-t border-gray-500 border-opacity-40 pt-2"strong class="mr-2">High </strong> {{currently.tempHigh}}°</li>
-          <span><li>< class="flex items-center justify-between </span>border-t border-gray-500 border-opacity-40 pt-2"strong class="mr-2">Wind</strong> {{currently.wind}}</li>
-          <span><li><strong class="mr-2">Cloud</strong> {{cur</span>rently.clouds}}</li>
-        <span></ul></span>
-      </div>
     </div>
 
     <script src="/v1/plugins/weather/weather.js"></script>
