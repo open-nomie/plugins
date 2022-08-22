@@ -8,7 +8,7 @@ const plugin = new NomiePlugin({
   addToWidgets: true,
   emoji: "⛈",
   version: "1.0",
-  description: `Track the weather with OpenWeatherMap. Using your location, this plugin will track the weather one time a day, as long as you open Nomie. **Note** this does require an API key from OpenWeatherMaps.`,
+  description: `Track the weather with Tomorrow.io. Using your location, this plugin will track the weather one time a day, as long as you open Nomie. **Note** this plugin requires a FREE API key from Tomorrow.io`,
   uses: ["createNote", "onLaunch", "getLocation"],
 });
 
@@ -262,8 +262,7 @@ new Vue({
           // Is the last day today?
           if (lookupData.captured === new Date().toDateString()) {
             cached = lookupData;
-            console.log({cached});
-            // cached.fresh = false;
+            cached.fresh = false;
           }
         }
 
@@ -285,7 +284,7 @@ new Vue({
                 await plugin.storage.setItem(LAST_WEATHER_KEY, weather);
               }
               cached = weather;
-              // cached.fresh = true;
+              cached.fresh = true;
             } else {
               throw Error('Unable to get the weather right now... Try later')
             }
