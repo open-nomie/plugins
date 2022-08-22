@@ -23,7 +23,8 @@ new Vue({
     now: plugin.dayjs(),
     mode: 'hidden',
     loading: true,
-    status: ''
+    status: '',
+    inNomie: false
   }),
   computed: {
     yearsArray() {
@@ -49,6 +50,15 @@ new Vue({
       this.mode = 'widget';
       this.loadMemories();
     });
+
+    plugin.onRegistered(()=>{
+      this.inNomie = true;
+    })
+
+    // Lets wait 6 seconds and if we're not in nomie, 
+    setTimeout(()=>{
+      if(!this.inNomie) this.error = 'Sorry, Memories will only inside of Nomie.app';
+    },4000);
 
   },
   methods: {
