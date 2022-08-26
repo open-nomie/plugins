@@ -65,6 +65,7 @@ new Vue({
 
     plugin.onRegistered(async () => {
       log("✅ Tester Plugin Registered");
+      log('User Prefs',plugin.prefs);
       plugin.storage.init().then(() => {
         log("✅ Plugin Storage initialized");
       });
