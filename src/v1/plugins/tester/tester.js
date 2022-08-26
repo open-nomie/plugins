@@ -77,6 +77,14 @@ new Vue({
     openTemplate() {
       plugin.openTemplateURL(`${window.location.origin}/v1/plugins/tester/template-test.json`);
     },
+    async confirmTest() {
+      const confirmed = await plugin.confirm("Can you please confirm?","Message should support **markdown**")
+      if(confirmed.value) {
+        await plugin.alert('You confirmed it!')
+      } else {
+        await plugin.alert('You DID NOT confirm it!')
+      }
+    },
     createNote() {
       plugin.createNote({
         note: "This is a test note!",

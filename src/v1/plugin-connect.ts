@@ -391,6 +391,7 @@ export class NomiePlugin {
       this.broadcast("confirm", {
         title,
         message,
+        id
       });
       this.addResponseListener(id, resolve);
     });
