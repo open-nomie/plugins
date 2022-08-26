@@ -112,9 +112,8 @@ new Vue({
       await plugin.alert(`You selected ${selected.length} trackables!`);
     },
     async selectTrackableAndValue() {
-      let selected = await plugin.selectTrackable('tracker');
-      if (selected.length) {
-        let trackable = selected[0];
+      let trackable = await plugin.selectTrackable('tracker');
+      if (trackable) {
         console.log({ trackable });
         let res = await plugin.getTrackableInput(trackable.id);
         let value = undefined;

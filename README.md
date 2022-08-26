@@ -160,7 +160,9 @@ if(notes) {
 }
 ```
 
-### plugin.selectTrackables(type, multiple:boolean)
+### plugin.selectTrackables(type)
+
+Select multiple Trackables
 
 `uses: [’selectTrackables’]` is required for this method
 
@@ -172,6 +174,19 @@ if(notes) {
 const mutipleTrackables = await plugin.selectTrackables(null, true);
 const justOneTrackable = await plugin.selectTrackables(null);
 const justAPersonTrackable = await plugin.selectTrackables('person');
+```
+
+### plugin.selectTrackable(type)
+
+Selects a single Trackable
+
+`uses: [’selectTrackables’]` is required for this method
+
+- **type**: undefined | tracker | context | person  - the type of trackables to show the user
+- **returns**: Promise<Trackable>
+
+```jsx
+const justAPersonTrackable = await plugin.selectTrackable('person');
 ```
 
 ### plugin.getTrackable(tag:string)
@@ -280,6 +295,7 @@ console.log(`The week starts on ${plugin.prefs.weekStarts}`);
 - `plugin.prefs.**useLocation**`: true or false - can we access the users location
 - `plugin.prefs.**useMetric**`: true or false - does the user prefer metric
 - `plugin.prefs.**weekStarts**`: sunday or monday - first day of the week
+- `plugin.prefs.**language**`: the users selected language (en-us);
 
 ---
 

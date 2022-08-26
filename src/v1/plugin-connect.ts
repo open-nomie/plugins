@@ -134,7 +134,7 @@ export class NomiePlugin {
    * @param [multiple=true] - boolean - whether or not to allow multiple trackables to be selected
    * @returns A promise that resolves to an array of trackables.
    */
-  selectTrackables(type: any, multiple = true) {
+  selectTrackables(type: any, multiple = true):Promise<Array<any>> {
     return new Promise((resolve) => {
       let id = this.toId("select");
       this.broadcast("selectTrackables", { id, type, multiple });
@@ -150,7 +150,10 @@ export class NomiePlugin {
    * @returns A promise that resolves to an array of trackables.
    */
   async selectTrackable(type: 'tracker' | 'context' | 'person') {
-    return this.selectTrackables(type, false);
+    let selected = await this.selectTrackables(type, false);
+    if(selected.length) {
+      return selected[0];
+    }
   }
 
   /**
