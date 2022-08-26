@@ -106,8 +106,12 @@ new Vue({
         );
       }
     },
+    async selectTrackables() {
+      const selected = await plugin.selectTrackables();
+      await plugin.alert(`You selected ${selected.length} trackables!`);
+    },
     async selectTrackableAndValue() {
-      let selected = await plugin.selectTrackables(undefined, false);
+      let selected = await plugin.selectTrackable('tracker');
       if (selected.length) {
         let trackable = selected[0];
         console.log({ trackable });

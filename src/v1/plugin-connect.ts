@@ -145,6 +145,15 @@ export class NomiePlugin {
   }
 
   /**
+   * It returns a promise that resolves to an array of trackables.
+   * @param {'tracker' | 'context' | 'person'} type - 'tracker' | 'context' | 'person'
+   * @returns A promise that resolves to an array of trackables.
+   */
+  async selectTrackable(type: 'tracker' | 'context' | 'person') {
+    return this.selectTrackables(type, false);
+  }
+
+  /**
    * If the prefs object is not null, return the value of the use24Hour property
    * @returns The value of the use24Hour property of the prefs object.
    */
