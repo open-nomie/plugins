@@ -20,31 +20,34 @@
       >
         {{error}}
       </section>
-      <header
-        v-if="!inNomie"
-        class="px-4 sticky top-0 w-full shadow-2xl h-12 flex items-center"
+
+      <div
+        v-if="!activeVideo"
+        class="logo z-0 fixed top-8 left-0 right-0 flex items-center justify-center px-4"
       >
-        <h1 class="dark:text-white font-bold">Meditate with Nomie</h1>
-      </header>
+        <h1 class="font-mono text-2xl font-bold text-white">
+          Guided Meditations
+        </h1>
+      </div>
       <!-- Completed Video -->
-      <section v-if="completedVideo" class="p-4">
-        <div
-          class="bg-yellow-500 flex flex-col p-10 pb-4 rounded-md shadow-2xl"
-        >
-          <h1 class="dark:text-white text-2xl font-semibol text-center mb-4">
+      <section v-if="completedVideo" class="p-4 z-50">
+        <div class="bg-purple-500 flex flex-col p-6 pb-4 rounded-md shadow-2xl">
+          <h1
+            class="text-white leading-tight text-2xl font-semibold text-center mb-4"
+          >
             {{completedVideo.name}} Complete
           </h1>
           <textarea
             v-model="completedVideo.note"
-            class="w-full bg-transparent p-4 bg-white bg-opacity-20"
+            class="w-full h-24 bg-transparent p-4 bg-white bg-opacity-20"
           >
           </textarea>
           <button
             v-if="!recording"
             @click="recordCompleted()"
-            class="mt-4 py-2 px-4 bg-black rounded-xl text-yellow-500"
+            class="mt-4 py-2 px-4 bg-black rounded-xl text-purple-200 font-bold"
           >
-            Record in Nomie
+            Track in Nomie →
           </button>
           <button
             v-if="recording"
@@ -66,15 +69,12 @@
       </section>
 
       <!-- Active Video -->
-      <section v-if="activeVideo">
-        <div id="frame-holder"></div>
-        <div
-          class="text-gray-500 mt-2 dark:text-gray-300 py-2 px-4 text-center font-semibold text-xs"
-        >
-          🎥 Video must play to the end to unlock "Track in Nomie".
-        </div>
-        <div class="sticky bottom-0 px-4 py-2 flex flex-col text-center">
-          <div class="grid grid-cols-2 gap-4">
+      <section
+        v-if="activeVideo"
+        class="p-4 z-50 absolute top-0 left-0 right-0 bottom-0 overflow-y-auto"
+      >
+        <div class="py-2 flex flex-col text-center">
+          <div class="grid grid-cols-2 gap-4 mb-2">
             <button
               @click="cancelActive()"
               class="w-full border border-white text-white font-semibold mx-auto max-w-xs px-4 py-2 rounded-lg"
@@ -96,6 +96,16 @@
               Remove Favorite
             </button>
           </div>
+        </div>
+        <div
+          class="video-holder rounded-md overflow-hidden bg-black"
+          style="min-height: calc(100vh - 240px)"
+        >
+          <div id="frame-holder"></div>
+        </div>
+        <div class="text-white mt-2 py-2 text-center font-semibold text-xs">
+          🎥 Video must play to the end to unlock "Track in Nomie". <br />
+
           <button
             @click="markAsWatched()"
             class="text-white text-opacity-50 mt-5 text-xs mx-auto"
@@ -107,7 +117,7 @@
 
       <!-- Video List -->
       <section
-        class="videos grid grid-cols-1 gap-4 sm:grid-cols-2 p-4"
+        class="videos mt-20 grid grid-cols-1 gap-4 sm:grid-cols-2 p-4"
         v-if="!activeVideo"
       >
         <button
