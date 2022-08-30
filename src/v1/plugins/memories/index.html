@@ -11,7 +11,12 @@
   </head>
   <body class="bg-gray-200 dark:bg-gray-800">
     <div id="content" class="min-h-screen space-y-4 flex flex-col" id="app">
-      <section class="p-5 mx-auto my-5 rounded-md bg-orange-500 text-white" v-if="error">{{error}}</section>
+      <section
+        class="p-5 mx-auto my-5 rounded-md bg-orange-500 text-white"
+        v-if="error"
+      >
+        {{error}}
+      </section>
       <section
         v-if="loading"
         class="text-gray-500 flex flex-col items-center px-4 justify-center h-80"
@@ -64,5 +69,17 @@
       </section>
     </div>
     <script src="/v1/plugins/memories/memories.js"></script>
+    <!-- 100% privacy friendly analytics -->
+    <script
+      async
+      defer
+      src="https://scripts.simpleanalyticscdn.com/latest.js"
+    ></script>
+    <noscript
+      ><img
+        src="https://queue.simpleanalyticscdn.com/noscript.gif"
+        alt=""
+        referrerpolicy="no-referrer-when-downgrade"
+    /></noscript>
   </body>
 </html>

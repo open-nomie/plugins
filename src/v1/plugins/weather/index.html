@@ -31,13 +31,17 @@
         :class="{ 'justify-center': view == 'modal' }"
         class="h-screen py-4 flex flex-col items-center w-full space-y-4"
       >
- 
-        <p class="dark:text-white opacity-50 text-sm">{{currently.dateString}}</p>
-        <p class="dark:text-white font-bold leading-tight text-4xl mb-6">{{currently.description}} Today</p>
+        <p class="dark:text-white opacity-50 text-sm">
+          {{currently.dateString}}
+        </p>
+        <p class="dark:text-white font-bold leading-tight text-4xl mb-6">
+          {{currently.description}} Today
+        </p>
 
         <ul
           v-if="currently.temp"
-          class=" dark:text-white flex flex-col space-y-2 px-4 w-full" style="max-width:400px;"
+          class="dark:text-white flex flex-col space-y-2 px-4 w-full"
+          style="max-width: 400px"
         >
           <li class="grid grid-cols-2 gap-4 mb-2 text-center text-sm">
             <div>
@@ -49,27 +53,39 @@
               <div>↑ High</div>
             </div>
           </li>
-          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+          <li
+            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
+          >
             <strong class="mr-2"> 🌞 Day Length </strong>
             <span>{{currently.day_length}}</span>
           </li>
-          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+          <li
+            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
+          >
             <strong class="mr-2"> 🏋️‍♀️ Pressure </strong>
             <span>{{currently.pressure}}</span>
           </li>
-          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+          <li
+            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
+          >
             <strong class="mr-2"> 💨 Wind Speed </strong>
             <span>{{currently.wind_speed}}</span>
           </li>
-          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+          <li
+            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
+          >
             <strong class="mr-2"> 🌥 Clouds </strong>
             <span>{{currently.clouds}}</span>
           </li>
-          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+          <li
+            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
+          >
             <strong class="mr-2"> 💧 Humidity </strong>
             <span>{{currently.humidity}}</span>
           </li>
-          <li class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2">
+          <li
+            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
+          >
             <strong class="mr-2"> 🌧 Precipitation </strong>
             <span>{{currently.precipitation}}</span>
           </li>
@@ -82,9 +98,21 @@
           Track Again
         </button>
       </div>
-
     </div>
 
     <script src="/v1/plugins/weather/weather.js"></script>
+
+    <!-- 100% privacy friendly analytics -->
+    <script
+      async
+      defer
+      src="https://scripts.simpleanalyticscdn.com/latest.js"
+    ></script>
+    <noscript
+      ><img
+        src="https://queue.simpleanalyticscdn.com/noscript.gif"
+        alt=""
+        referrerpolicy="no-referrer-when-downgrade"
+    /></noscript>
   </body>
 </html>
