@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nomie Meditate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/v1/nomie-plugin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+  </head>
+  <body
+    class="bg-gradient-to-tl from-green-600 via-blue-600 to-purple-700 p-0 m-0"
+  >
+    <div id="content" class="min-h-screen flex flex-col" id="app">
+      <section
+        class="p-5 mx-auto my-5 rounded-md bg-orange-500 text-white"
+        v-if="error"
+      >
+        {{error}}
+      </section>
+      <header
+        v-if="!inNomie"
+        class="px-4 sticky top-0 w-full shadow-2xl h-12 flex items-center"
+      >
+        <h1 class="dark:text-white font-bold">Meditate with Nomie</h1>
+      </header>
+      <!-- Completed Video -->
+      <section v-if="completedVideo" class="p-4">
+        <div
+          class="bg-yellow-500 flex flex-col p-10 pb-4 rounded-md shadow-2xl"
+        >
+          <h1 class="dark:text-white text-2xl font-semibol text-center mb-4">
+            {{completedVideo.name}} Complete
+          </h1>
+          <textarea
+            v-model="completedVideo.note"
+            class="w-full bg-transparent p-4 bg-white bg-opacity-20"
+          >
+          </textarea>
+          <button
+            v-if="!recording"
+            @click="recordCompleted()"
+            class="mt-4 py-2 px-4 bg-black rounded-xl text-yellow-500"
+          >
+            Record in Nomie
+          </button>
+          <button
+            v-if="recording"
+            disabled
+            class="mt-4 py-2 px-4 opacity-50 bg-black rounded-xl text-yellow-500"
+          >
+            Sending to Nomie...
+          </button>
+          <div class="mt-4 w-full flex items-center justify-center space-x-2">
+            <span class="opacity-40">or</span>
+            <button
+              @click="clear(true)"
+              class="bg-black bg-opacity-10 text-black px-2 py-px rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Active Video -->
+      <section v-if="activeVideo">
+        <div id="frame-holder"></div>
+        <div
+          class="text-gray-500 mt-2 dark:text-gray-300 py-2 px-4 text-center font-semibold text-xs"
+        >
+          🎥 Video must play to the end to unlock "Track in Nomie".
+        </div>
+        <div class="sticky bottom-0 px-4 py-2 flex flex-col text-center">
+          <div class="grid grid-cols-2 gap-4">
+            <button
+              @click="cancelActive()"
+              class="w-full border border-white text-white font-semibold mx-auto max-w-xs px-4 py-2 rounded-lg"
+            >
+              ← Back
+            </button>
+            <button
+              class="bg-white bg-opacity-30 px-4 py-2 rounded-md text-white"
+              @click="toggleFavorite(activeVideo.youtubeId)"
+              v-if="!favorites.includes(activeVideo.youtubeId)"
+            >
+              Set as Favorite
+            </button>
+            <button
+              class="bg-white bg-opacity-30 px-4 py-2 rounded-md text-white"
+              @click="toggleFavorite(activeVideo.youtubeId)"
+              v-else
+            >
+              Remove Favorite
+            </button>
+          </div>
+          <button
+            @click="markAsWatched()"
+            class="text-white text-opacity-50 mt-5 text-xs mx-auto"
+          >
+            Cheat
+          </button>
+        </div>
+      </section>
+
+      <!-- Video List -->
+      <section
+        class="videos grid grid-cols-1 gap-4 sm:grid-cols-2 p-4"
+        v-if="!activeVideo"
+      >
+        <button
+          v-for="video in videos"
+          class="relative flex w-full items-stretch space-x-4 bg-white dark:bg-black bg-opacity-80 dark:bg-opacity-70 backdrop-filter backdrop-blur-sm overflow-hidden rounded-xl shadow-2xl"
+          @click="selectVideo(video)"
+        >
+          <figure
+            :style="`background-image:url(https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg)`"
+            class="bg-cover flex-grow-0 flex-shrink-0 bg-center h-auto w-32"
+          ></figure>
+          <main class="text-left flex flex-col space-y-1 min-h-40 py-4 pr-4">
+            <h2 class="dark:text-white font-semibold leading-tight">
+              <span v-if="video.watched" class="mr-2">✅</span>
+              <span>{{video.name}}</span>
+            </h2>
+            <p class="dark:text-white text-xs">{{video.description}}</p>
+            <h2 class="text-gray-500 dark:text-gray-400 text-xs">
+              {{video.duration}}
+            </h2>
+          </main>
+          <span
+            class="absolute bottom-2 right-2"
+            @click="toggleFavorite(video.youtubeId, $event)"
+          >
+            <span
+              class="text-red-500"
+              v-if="favorites.includes(video.youtubeId)"
+            >
+              ❤️
+            </span>
+            <span class="text-gray-400 dark:text-gray-600" v-else>♡</span>
+          </span>
+        </button>
+      </section>
+    </div>
+    <script src="/v1/plugins/meditate/meditate.js"></script>
+    <!-- 100% privacy friendly analytics -->
+    <script
+      async
+      defer
+      src="https://scripts.simpleanalyticscdn.com/latest.js"
+    ></script>
+    <noscript
+      ><img
+        src="https://queue.simpleanalyticscdn.com/noscript.gif"
+        alt=""
+        referrerpolicy="no-referrer-when-downgrade"
+    /></noscript>
+  </body>
+</html>
