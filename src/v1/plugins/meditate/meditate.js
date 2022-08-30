@@ -26,13 +26,6 @@ let videos = [
     youtubeId: 'inpok4MKVLM',
   },
   {
-    name: '5-Min Peace & Clarity',
-    duration: '00:05:00',
-    description: 'Guided meditation with a focus on peace and clarity.',
-    note: "#meditation(00:05:00) peace and clarity with @CoconutCompetitions",
-    youtubeId: 'uPahMgtxnR0',
-  },
-  {
     name: '10-Min Energy Cleanse Meditation',
     duration: '00:10:00',
     description: `Clear Your System of Any Stress & Anxiety with Great Meditations`,
