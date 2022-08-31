@@ -1,7 +1,6 @@
 import { Dayjs } from "dayjs";
 import dayjs from "../lib/dayjs";
 
-
 export type PluginUseTypes =
   | "trackablesSelected"
   | "selectTrackables"
@@ -31,7 +30,7 @@ export type PluginType = {
   active: boolean;
   uses: Array<PluginUseTypes>;
   error?: string;
-  dayjs: Dayjs
+  dayjs: Dayjs;
 };
 
 type getTrackableUsageProps = {
@@ -48,8 +47,6 @@ type UserPrefs = {
   weekStarts: "monday" | "sunday";
   theme: "dark" | "light" | "system";
 };
-
-
 
 /* It takes a plugin object as an argument, and
 provides a set of methods that can be used to communicate with the Nomie app */
@@ -106,7 +103,7 @@ export class NomiePlugin {
         date,
         daysBack,
         id,
-        lid: this.lid
+        lid: this.lid,
       });
       this.listeners[id] = (payload: any) => {
         resolve(payload.results);
@@ -115,16 +112,16 @@ export class NomiePlugin {
   }
 
   openNoteEditor(note: any) {
-    let openNote:any;
-    if(typeof note == 'string') {
+    let openNote: any;
+    if (typeof note == "string") {
       openNote = { note };
-    } else if(typeof note == 'object') {
+    } else if (typeof note == "object") {
       openNote = note;
     }
-    if(openNote) {
+    if (openNote) {
       this.broadcast("openNoteEditor", {
-        note: openNote
-      })
+        note: openNote,
+      });
     }
   }
 
@@ -134,7 +131,7 @@ export class NomiePlugin {
    * @param [multiple=true] - boolean - whether or not to allow multiple trackables to be selected
    * @returns A promise that resolves to an array of trackables.
    */
-  selectTrackables(type: any, multiple = true):Promise<Array<any>> {
+  selectTrackables(type: any, multiple = true): Promise<Array<any>> {
     return new Promise((resolve) => {
       let id = this.toId("select");
       this.broadcast("selectTrackables", { id, type, multiple });
@@ -149,11 +146,15 @@ export class NomiePlugin {
    * @param {'tracker' | 'context' | 'person'} type - 'tracker' | 'context' | 'person'
    * @returns A promise that resolves to an array of trackables.
    */
-  async selectTrackable(type: 'tracker' | 'context' | 'person') {
+  async selectTrackable(type: "tracker" | "context" | "person") {
     let selected = await this.selectTrackables(type, false);
-    if(selected.length) {
+    if (selected.length) {
       return selected[0];
     }
+  }
+
+  openTrackableEditor(trackable: any) {
+    this.broadcast("openTrackableEditor", { trackable });
   }
 
   /**
@@ -188,9 +189,10 @@ export class NomiePlugin {
   }
 
   openURL(url: string, title: string) {
-    this.broadcast('openURL', {
-      url, title
-    })
+    this.broadcast("openURL", {
+      url,
+      title,
+    });
   }
 
   _fireListeners(key: string, payload: any) {
@@ -384,11 +386,11 @@ export class NomiePlugin {
       this.addResponseListener(id, resolve);
     });
   }
-  
-  openTemplateURL(url:string) {
-    this.broadcast('openTemplateURL', {
-      url  
-    })
+
+  openTemplateURL(url: string) {
+    this.broadcast("openTemplateURL", {
+      url,
+    });
   }
 
   /**
@@ -403,7 +405,7 @@ export class NomiePlugin {
       this.broadcast("confirm", {
         title,
         message,
-        id
+        id,
       });
       this.addResponseListener(id, resolve);
     });
@@ -431,7 +433,6 @@ export class NomiePlugin {
    * @returns A promise that resolves to the value of the key in the storage.
    */
   getStorageItem(key: string): Promise<any> {
-
     return new Promise((resolve, reject) => {
       let id = this.toId(`storage-get-${key}`);
       this.broadcast("getStorageItem", {

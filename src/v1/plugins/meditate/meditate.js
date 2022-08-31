@@ -92,7 +92,8 @@ new Vue({
     recording: false,
     inNomie: true,
     videoState: "",
-    favorites: []
+    favorites: [],
+    trackable: undefined
   }),
   computed: {
 
@@ -111,6 +112,8 @@ new Vue({
       this.loading = false;
       await plugin.storage.init()
       this.favorites = plugin.storage.getItem('favorites') || [];
+      this.trackable = await plugin.getTrackable('#meditation');
+
     })
 
     setTimeout(() => {
@@ -140,6 +143,19 @@ new Vue({
         this.favorites.push(videoId);
       }
       plugin.storage.setItem('favorites', this.favorites);
+    },
+    installTrackable() {
+      const trackable = {
+        type: 'tracker',
+        tag: '#meditation',
+        tracker: {
+          id: 'meditation',
+          type: 'timer',
+          label: 'Meditation',
+          emoji: '🧘🏽‍♀️'
+        }
+      }
+      plugin.openTrackableEditor(trackable);
     },
     cancelActive() {
       this.activeVideo = undefined;
