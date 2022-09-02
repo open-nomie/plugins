@@ -72,3 +72,13 @@
 }
 
 /* Switch */
+
+.slide-enter-active,
+.slide-leave-active {
+  @apply transition-all duration-200 ease-in-out;
+}
+.slide-enter, .slide-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  @apply translate-y-10;
+  @apply transform-gpu;
+  @apply opacity-0;
+}

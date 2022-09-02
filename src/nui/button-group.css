@@ -10,6 +10,7 @@
 
   > button {
     @apply w-full;
+    @apply font-semibold;
   }
 
   .active {

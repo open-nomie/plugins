@@ -23,6 +23,10 @@
   @apply font-semibold;
 }
 
+.nui-button:disabled {
+  @apply opacity-50;
+}
+
 .nui-button.sm {
   @apply px-3 py-2;
   @apply text-sm;
@@ -34,8 +38,8 @@
   @apply text-xs;
 }
 .nui-button.primary {
-  @apply text-primary-500;
-  @apply dark:text-primary-400;
+  @apply text-primary-600;
+  @apply dark:text-primary-500;
 }
 .nui-button.solid {
   @apply shadow-md;
