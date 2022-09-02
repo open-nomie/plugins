@@ -58,6 +58,8 @@
                 {{plugin.dayjs(entry.end).format(`${plugin.prefs.use24hour ?
                 'H:mm' : 'h:mm a'}`)}}
               </span>
+              <div class="flex-grow flex-shrink"></div>
+              <div class="text-orange-500 text-sm">{{entry.location}}</div>
             </header>
             <div
               class="card overflow-hidden p-4 leading-normal bg-white dark:bg-gray-900 rounded-lg"
