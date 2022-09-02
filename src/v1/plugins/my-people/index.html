@@ -12,347 +12,365 @@
   </head>
   <body class="nui-bg-100">
     <div id="app">
-      <div class="nui-backdrop" v-if="activePerson">
-        <div
-          id="active-modal"
-          class="nui-modal fullscreen flex flex-col justify-items-stretch"
-        >
-          <header class="mt-2 nui-stiff py-2 shadow-md">
-            <div class="nui-toolbar space-x-4">
-              <avatar
-                :avatar="activePerson.avatar"
-                :name="activePerson.name"
-                size="50"
-              ></avatar>
-              <main>
-                <h2 class="nui-text-4xl nui-title solid">
-                  {{activePerson.name}}
-                </h2>
-                <p class="nui-text-700 text-sm" v-if="activePerson.birthday">
-                  {{activePerson.age}} years old
-                </p>
-              </main>
-            </div>
-            <div class="nui-toolbar">
-              <div class="nui-button-group compact">
-                <button
-                  @click="activePersonView = 'info'"
-                  :class="`nui-button primary ${activePersonView == 'info' ? 'solid' : ''}`"
-                >
-                  Info
-                </button>
-                <button
-                  @click="activePersonView = 'notes'"
-                  :class="`nui-button primary ${activePersonView == 'notes' ? 'solid' : ''}`"
-                >
-                  Notes
-                </button>
-                <button
-                  @click="activePersonView = 'check-in'"
-                  :class="`nui-button primary ${activePersonView == 'check-in' ? 'solid' : ''}`"
-                >
-                  Check-in
-                </button>
-              </div>
-            </div>
-          </header>
-
-          <!-- Active User INfo View-->
-          <main
-            class="nui-filler p-4 overflow-y-auto"
-            v-if="activePersonView == 'info'"
+      <!-- ACTIVE PERSON MODAL -->
+      <transition name="slide">
+        <section class="nui-backdrop" v-if="activePerson">
+          <div
+            id="active-modal"
+            class="nui-modal fullscreen flex flex-col justify-items-stretch"
           >
-            <ul class="nui-card mb-4">
-              <div v-if="activePerson.birthday">
+            <header class="mt-2 nui-stiff py-2 shadow-md">
+              <div class="nui-toolbar space-x-4">
+                <avatar
+                  :avatar="activePerson.avatar"
+                  :name="activePerson.name"
+                  size="50"
+                ></avatar>
+                <main>
+                  <h2 class="nui-text-4xl nui-title solid">
+                    {{activePerson.name}}
+                  </h2>
+                  <p
+                    class="nui-text-700 text-base"
+                    v-if="activePerson.birthday"
+                  >
+                    {{activePerson.age}} years old
+                  </p>
+                </main>
+              </div>
+              <div class="nui-toolbar">
+                <div class="nui-button-group compact">
+                  <button
+                    @click="activePersonView = 'info'"
+                    :class="`nui-button primary ${activePersonView == 'info' ? 'solid' : ''}`"
+                  >
+                    Info
+                  </button>
+                  <button
+                    @click="activePersonView = 'notes'"
+                    :class="`nui-button primary ${activePersonView == 'notes' ? 'solid' : ''}`"
+                  >
+                    Notes
+                  </button>
+                  <button
+                    @click="activePersonView = 'check-in'"
+                    :class="`nui-button primary ${activePersonView == 'check-in' ? 'solid' : ''}`"
+                  >
+                    Check-in
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            <!-- Active User INfo View-->
+
+            <main
+              class="nui-filler p-4 overflow-y-auto"
+              v-if="activePersonView == 'info'"
+            >
+              <ul class="nui-card mb-4">
+                <div v-if="activePerson.birthday">
+                  <li class="nui-item text-sm justify-between">
+                    <div class="font-normal nui-text-400">Birthday</div>
+
+                    <h2 class="text-green-500" v-if="activePerson.isBirthday">
+                      🎁 Today!
+                    </h2>
+                    <h2 v-else class="">
+                      <span class="nui-text-inverse font-semibold"
+                        >{{activePerson.birthdayFormatted}}</span
+                      >
+                      <span class="nui-text-600"
+                        >({{activePerson.birthdayFromNow}} days)</span
+                      >
+                    </h2>
+                  </li>
+                  <hr class="nui-divider" />
+                </div>
+
                 <li class="nui-item text-sm justify-between">
-                  <h2 class="text-green-500" v-if="activePerson.isBirthday">
-                    🎁 Birthday is Today!
-                  </h2>
-                  <h2 v-else class="font-normal nui-text-600">
-                    Birthday in {{activePerson.birthdayFromNow}} days
-                  </h2>
-                  <h3 class="nui-title text-sm">
-                    {{activePerson.birthdayFormatted}}
+                  <div class="font-normal nui-text-400">Last Interaction</div>
+
+                  <h3 class="nui-title text-sm" v-if="activePerson.latest">
+                    {{dayjs(activePerson.latest).fromNow()}}
                   </h3>
+                  <h3 class="nui-title text-sm" v-else>None</h3>
                 </li>
-                <hr class="nui-divider" />
+              </ul>
+
+              <div id="user-actions" class="nui-card mt-2">
+                <div v-if="!activePerson.birthday">
+                  <button
+                    class="nui-item nui-text-inverse"
+                    @click="editPerson(activePerson)"
+                  >
+                    <span class="text-2xl">🎁</span>
+                    <span>Add Birthday</span>
+                  </button>
+                  <hr class="nui-divider" />
+                </div>
+                <div id="phone-contacts" v-if="activePerson.phone">
+                  <a
+                    class="nui-item space-x-4"
+                    :href="`tel://${activePerson.phone}`"
+                  >
+                    <span class="text-2xl">📱</span>
+                    <h2>Call {{activePerson.phone}}</h2>
+                  </a>
+                  <hr class="nui-divider" />
+                  <a
+                    class="nui-item space-x-4"
+                    :href="`sms:${activePerson.phone}`"
+                  >
+                    <span class="text-2xl">💬</span>
+                    <h2>Message</h2>
+                  </a>
+                  <hr class="nui-divider" />
+                </div>
+
+                <div id="user-email">
+                  <a
+                    :href="`mailto://${activePerson.email}`"
+                    class="nui-item space-x-4"
+                    v-if="activePerson.email"
+                  >
+                    <span class="text-2xl">📧</span>
+                    <span>Send an Email</span>
+                  </a>
+                  <button
+                    v-else
+                    class="nui-item nui-text-inverse"
+                    @click="editPerson(activePerson)"
+                  >
+                    <span class="text-2xl">📧</span>
+                    <span>Add Email</span>
+                  </button>
+                </div>
               </div>
 
-              <li class="nui-item text-sm justify-between">
-                <span
-                  v-if="activePerson.latest"
-                  class="font-normal nui-text-600"
-                  >Last Interaction
-                </span>
-                <h1 class="nui-title text-sm" v-else>No recent interactions</h1>
-                <h3 class="nui-title text-sm" v-if="activePerson.latest">
-                  {{dayjs(activePerson.latest).fromNow()}}
-                </h3>
-              </li>
-            </ul>
+              <section class="nui-card mt-4 p-4" v-if="activePerson.notes">
+                <h2 class="nui-title">About</h2>
+                <p class="text-sm nui-text-700 leading-tight">
+                  {{activePerson.notes}}
+                </p>
+              </section>
 
-            <div id="user-actions" class="nui-card mt-2">
-              <div v-if="!activePerson.birthday">
+              <section class="nui-card mt-4">
                 <button
-                  class="nui-item nui-text-inverse"
+                  class="nui-item nui-text-inverse space-x-4"
                   @click="editPerson(activePerson)"
                 >
-                  <span class="text-2xl">🎁</span>
-                  <span>Add Birthday</span>
+                  <span class="text-2xl">📇</span>
+                  <span>Edit {{activePerson.name}}'s Info</span>
                 </button>
-                <hr class="nui-divider" />
+              </section>
+            </main>
+
+            <main
+              id="active-user-checkin"
+              class="nui-filler p-4 overflow-y-auto"
+              v-else-if="activePersonView == 'check-in'"
+            >
+              <div class="nui-card p-2">
+                <div class="flex flex-wrap pt-1 pb-2">
+                  <button
+                    v-for="button in checkinOptions"
+                    class="m-1 nui-button xs nui-bg-200 nui-text-800"
+                    @click="checkInNote = button.note"
+                  >
+                    {{button.label}}
+                  </button>
+                </div>
+
+                <textarea
+                  v-model="checkInNote"
+                  class="nui-input w-full mb-2"
+                  rows="3"
+                  placeholder="What's up?"
+                ></textarea>
+                <div class="pt-2 w-full flex justify-end space-x-4">
+                  <button
+                    class="nui-button nui-text-400"
+                    @click="checkInNote = ''"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    v-if="!saving"
+                    :disabled="checkInNote.toLowerCase().search(`@${activePerson.username.toLowerCase()}`) == -1"
+                    class="nui-button lg solid primary"
+                    @click="saveNote()"
+                  >
+                    Save to Nomie
+                  </button>
+                  <button
+                    disabled
+                    v-else
+                    class="nui-button w-full lg solid primary"
+                  >
+                    Saving...
+                  </button>
+                </div>
               </div>
-              <div id="phone-contacts" v-if="activePerson.phone">
-                <a
-                  class="nui-item space-x-4"
-                  :href="`tel://${activePerson.phone}`"
+            </main>
+
+            <main
+              id="active-user-notes"
+              class="nui-filler p-4 overflow-y-auto"
+              v-else-if="activePersonView == 'notes'"
+            >
+              <div class="nui-card">
+                <div
+                  v-if="!activePersonNotes.length"
+                  class="nui-item nui-text-900"
                 >
-                  <span class="text-2xl">📱</span>
-                  <h2>Call {{activePerson.phone}}</h2>
-                </a>
-                <hr class="nui-divider" />
-                <a
-                  class="nui-item space-x-4"
-                  :href="`sms://${activePerson.phone}`"
-                >
-                  <span class="text-2xl">💬</span>
-                  <h2>Message</h2>
-                </a>
-                <hr class="nui-divider" />
+                  <h2 class="nui-title font-semibold w-full text-center py-2">
+                    No recent notes
+                  </h2>
+                </div>
               </div>
 
-              <div id="user-email">
-                <a
-                  :href="`mailto:${activePerson.email}`"
-                  class="nui-item space-x-4"
-                  v-if="activePerson.email"
-                >
-                  <span class="text-2xl">📧</span>
-                  <span>Send an Email</span>
-                </a>
-                <button
-                  v-else
-                  class="nui-item nui-text-inverse"
-                  @click="editPerson(activePerson)"
-                >
-                  <span class="text-2xl">📧</span>
-                  <span>Add Email</span>
-                </button>
-              </div>
-            </div>
+              <article
+                v-for="note in activePersonNotes"
+                class="nui-card mb-4 p-4"
+              >
+                <p class="text-xs space-x-2">
+                  <span class="nui-text-700">
+                    {{dayjs(note.end).format('ddd Do MMM YYYY')}}
+                  </span>
+                  <span class="nui-text-500">
+                    {{dayjs(note.end).fromNow()}}
+                  </span>
+                  <span v-if="note.lat" class="text-green-500"
+                    >{{note.location}}</span
+                  >
+                </p>
+                <p class="mt-2">{{note.note}}</p>
+              </article>
+            </main>
 
-            <section class="nui-card mt-4 p-4" v-if="activePerson.notes">
-              <h2 class="nui-title">About</h2>
-              <p class="text-sm nui-text-700 leading-tight">
-                {{activePerson.notes}}
-              </p>
-            </section>
-
-            <section class="nui-card mt-4">
+            <footer
+              class="nui-stiff px-4 pt-4 pb-4 nui-toolbar space-x-4 justify-between"
+            >
               <button
-                class="nui-item nui-text-inverse space-x-4"
-                @click="editPerson(activePerson)"
+                @click="clearActivePerson()"
+                class="py-2 text-xl nui-button rounded-xl nui-stiff w-full lg bg-red-500 text-white solid"
               >
-                <span class="text-2xl">📇</span>
-                <span>Edit {{activePerson.name}}'s Info</span>
+                Close
               </button>
-            </section>
-          </main>
-
-          <main
-            id="active-user-checkin"
-            class="nui-filler p-4 overflow-y-auto"
-            v-else-if="activePersonView == 'check-in'"
-          >
-            <div class="nui-card p-2">
-              <div class="flex flex-wrap pt-1 pb-2">
-                <button
-                  v-for="button in checkinOptions"
-                  class="m-px nui-button xs nui-bg-200 nui-text-800"
-                  @click="addToNote(button.note)"
-                >
-                  {{button.label}}
-                </button>
-              </div>
-
-              <textarea
-                v-model="checkInNote"
-                class="nui-input w-full mb-2"
-                rows="3"
-                placeholder="What's up?"
-              ></textarea>
-              <div class="pt-2 w-full">
-                <button
-                  v-if="!saving"
-                  class="nui-button w-full lg solid primary"
-                  @click="saveNote()"
-                >
-                  Save to Nomie
-                </button>
-                <button
-                  disabled
-                  v-else
-                  class="nui-button w-full lg solid primary"
-                >
-                  Saving...
-                </button>
-              </div>
-            </div>
-          </main>
-
-          <main
-            id="active-user-notes"
-            class="nui-filler p-4 overflow-y-auto"
-            v-else-if="activePersonView == 'notes'"
-          >
-            <div class="nui-card">
-              <div
-                v-if="!activePersonNotes.length"
-                class="nui-item nui-text-900 nui-divider"
-              >
-                <h2 class="nui-title font-semibold w-full text-center py-2">
-                  No recent notes
-                </h2>
-              </div>
-            </div>
-
-            <article
-              v-for="note in activePersonNotes"
-              class="nui-card mb-4 p-4"
-            >
-              <p class="text-xs space-x-2">
-                <span class="nui-text-700">
-                  {{dayjs(note.end).format('ddd Do MMM YYYY')}}
-                </span>
-                <span class="nui-text-500">
-                  {{dayjs(note.end).fromNow()}}
-                </span>
-                <span v-if="note.lat" class="text-green-500"
-                  >{{note.location}}</span
-                >
-              </p>
-              <p class="mt-2">{{note.note}}</p>
-            </article>
-          </main>
-
-          <footer
-            class="nui-stiff px-4 pt-4 pb-2 nui-toolbar space-x-4 justify-between"
-          >
-            <button
-              @click="activePerson = undefined"
-              class="py-3 nui-button rounded-xl nui-stiff w-full lg text-lg bg-red-500 text-white solid"
-            >
-              Cancel
-            </button>
-          </footer>
-        </div>
-      </div>
-
-      <div class="nui-backdrop" v-if="editingPerson">
-        <div class="nui-modal flex flex-col justify-items-stretch">
-          <header class="nui-stiff nui-toolbar space-x-4 shadow-md">
-            <img
-              :src="editingPerson.avatar"
-              v-if="editingPerson.avatar"
-              class="w-4 h-4 rounded-full overflow-hidden"
-            />
-            <h2>{{editingPerson.name}}</h2>
-          </header>
-          <div class="flex flex-col space-y-2 p-4 nui-filler overflow-y-auto">
-            <fieldset class="nui-fieldset inline">
-              <label>Display Name</label>
-              <input
-                class="nui-input"
-                type="text"
-                placeholder="Full Name"
-                v-model="editingPerson.displayName"
-              />
-            </fieldset>
-
-            <fieldset class="nui-fieldset inline">
-              <label>Stay in touch</label>
-              <select
-                class="nui-input"
-                type="text"
-                v-model="editingPerson.maxNoContactDays"
-              >
-                <option value="1">Every 1 Day</option>
-                <option value="2">Every 2 Days</option>
-                <option value="7">Each Week</option>
-                <option value="14">Every Couple Weeks</option>
-                <option value="30">Once a Month</option>
-                <option value="60">Every Couple months</option>
-                <option value="90">Quarterly</option>
-              </select>
-            </fieldset>
-
-            <fieldset class="nui-fieldset inline">
-              <label>Birthday</label>
-              <input
-                class="nui-input"
-                type="date"
-                v-model="editingPerson.birthday"
-              />
-            </fieldset>
-
-            <fieldset class="nui-fieldset inline">
-              <label>Mobile Phone</label>
-              <input
-                class="nui-input"
-                type="tel"
-                placeholder="317-555-5555"
-                v-model="editingPerson.phone"
-              />
-            </fieldset>
-
-            <fieldset class="nui-fieldset inline">
-              <label>Email</label>
-              <input
-                class="nui-input"
-                type="email"
-                placeholder="Email Address"
-                v-model="editingPerson.email"
-              />
-            </fieldset>
-
-            <fieldset class="nui-fieldset">
-              <label>Notes</label>
-              <textarea
-                class="nui-input"
-                rows="3"
-                :placeholder="`Notes about ${editingPerson.name}`"
-                v-model="editingPerson.notes"
-              ></textarea>
-            </fieldset>
-
-            <hr class="nui-divider my-2" />
-            <fieldset class="nui-text-solid flex items-center space-x-4">
-              <label class="nui-text-800 text-sm font-semibold"
-                >Hide Person</label
-              >
-              <label class="nui-switch">
-                <input v-model="editingPerson.hidden" type="checkbox" />
-                <span class="nui-control"></span>
-              </label>
-            </fieldset>
+            </footer>
           </div>
-          <hr class="nui-divider" />
-          <footer class="nui-toolbar space-x-4 py-2 nui-stiff">
-            <button
-              @click="editingPerson = undefined"
-              class="w-full lg nui-button nui-text-500"
-            >
-              Cancel
-            </button>
-            <button
-              @click="savePerson(editingPerson)"
-              class="w-full nui-button primary lg solid"
-            >
-              Save
-            </button>
-          </footer>
+        </section>
+      </transition>
+      <!-- END ACTIVE PERSON MODAL -->
+
+      <transition name="slide">
+        <div id="editing-modal" class="nui-backdrop" v-if="editingPerson">
+          <div class="nui-modal flex flex-col justify-items-stretch">
+            <header class="nui-stiff nui-toolbar space-x-4 shadow-md">
+              <img
+                :src="editingPerson.avatar"
+                v-if="editingPerson.avatar"
+                class="w-4 h-4 rounded-full overflow-hidden"
+              />
+              <h2>{{editingPerson.name}}</h2>
+            </header>
+            <div class="flex flex-col space-y-2 p-4 nui-filler overflow-y-auto">
+              <fieldset class="nui-fieldset inline">
+                <label>Display Name</label>
+                <input
+                  class="nui-input"
+                  type="text"
+                  placeholder="Full Name"
+                  v-model="editingPerson.displayName"
+                />
+              </fieldset>
+
+              <fieldset class="nui-fieldset inline">
+                <label>Stay in touch</label>
+                <select
+                  class="nui-input"
+                  type="text"
+                  v-model="editingPerson.maxNoContactDays"
+                >
+                  <option value="1">Every 1 Day</option>
+                  <option value="2">Every 2 Days</option>
+                  <option value="7">Each Week</option>
+                  <option value="14">Every Couple Weeks</option>
+                  <option value="30">Once a Month</option>
+                  <option value="60">Every Couple months</option>
+                  <option value="90">Quarterly</option>
+                </select>
+              </fieldset>
+
+              <fieldset class="nui-fieldset inline">
+                <label>Birthday</label>
+                <input
+                  class="nui-input"
+                  type="date"
+                  v-model="editingPerson.birthday"
+                />
+              </fieldset>
+
+              <fieldset class="nui-fieldset inline">
+                <label>Mobile Phone</label>
+                <input
+                  class="nui-input"
+                  type="tel"
+                  placeholder="317-555-5555"
+                  v-model="editingPerson.phone"
+                />
+              </fieldset>
+
+              <fieldset class="nui-fieldset inline">
+                <label>Email</label>
+                <input
+                  class="nui-input"
+                  type="email"
+                  placeholder="Email Address"
+                  v-model="editingPerson.email"
+                />
+              </fieldset>
+
+              <fieldset class="nui-fieldset">
+                <label>Notes</label>
+                <textarea
+                  class="nui-input"
+                  rows="3"
+                  :placeholder="`Notes about ${editingPerson.name}`"
+                  v-model="editingPerson.notes"
+                ></textarea>
+              </fieldset>
+
+              <hr class="nui-divider my-2" />
+              <fieldset class="nui-text-solid flex items-center space-x-4">
+                <label class="nui-text-800 text-sm font-semibold"
+                  >Hide Person</label
+                >
+                <label class="nui-switch">
+                  <input v-model="editingPerson.hidden" type="checkbox" />
+                  <span class="nui-control"></span>
+                </label>
+              </fieldset>
+            </div>
+            <hr class="nui-divider" />
+            <footer class="nui-toolbar space-x-4 py-2 nui-stiff">
+              <button
+                @click="editingPerson = undefined"
+                class="w-full lg nui-button nui-text-500"
+              >
+                Cancel
+              </button>
+              <button
+                @click="savePerson(editingPerson)"
+                class="w-full nui-button primary lg solid"
+              >
+                Save
+              </button>
+            </footer>
+          </div>
         </div>
-      </div>
+      </transition>
 
       <div class="min-h-screen flex flex-col pt-6 px-4 space-y-4">
         <section class="nui-card" v-if="birthdayArray.length">

@@ -215,36 +215,44 @@ new Vue({
       return [
         {
           label: 'Lunch',
-          note: `Lunch with @${this.activePerson.username}`
+          note: `Lunch with @${this.activePerson.username} `
         },
         {
           label: 'Dinner',
-          note: `Dinner with @${this.activePerson.username}`
+          note: `Dinner with @${this.activePerson.username} `
         },
         {
           label: 'Phone Call',
-          note: `Phone Call with @${this.activePerson.username}`
+          note: `Phone Call with @${this.activePerson.username} `
+        },
+        {
+          label: 'Virtual Meeting',
+          note: `Virtual meeting with @${this.activePerson.username} `
         },
         {
           label: 'Text/SMS',
-          note: `Texted with @${this.activePerson.username}`
+          note: `Texted with @${this.activePerson.username} `
         },
         {
           label: 'Email',
-          note: `Emailed @${this.activePerson.username}`
+          note: `Emailed @${this.activePerson.username} `
         },
         {
           label: 'Drinks',
-          note: `Drinks with @${this.activePerson.username}`
+          note: `Drinks with @${this.activePerson.username} `
         },
         {
           label: 'Meeting',
-          note: `Meeting with @${this.activePerson.username}`
+          note: `Meeting with @${this.activePerson.username} `
         },
         {
           label: 'Hung-out',
-          note: `Hung out with @${this.activePerson.username}`
-        }
+          note: `Hung out with @${this.activePerson.username} `
+        },
+        {
+          label: 'Other',
+          note: `With @${this.activePerson.username} `
+        },
       ]
     },
     birthdayArray() {
@@ -271,13 +279,17 @@ new Vue({
     },
     async saveNote() {
       this.saving = true;
+      await wait(200);
       if (this.activePerson && this.checkInNote) {
         this.activePerson.latest = new Date();
         await plugin.createNote(this.checkInNote);
-        this.checkInNote = '';
-        this.activePerson = undefined;
+        this.clearActivePerson();
         this.saving = false;
       }
+    },
+    clearActivePerson() {
+      this.checkInNote = "";
+      this.activePerson = undefined;
     },
     addToNote(str) {
       this.checkInNote = [this.checkInNote, str].join(' ');
