@@ -22,6 +22,16 @@
     --tw-bg-opacity: 0.1;
   }
 }
+.nui-bg-primary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 170 255 / var(--tw-bg-opacity));
+}
+@media (prefers-color-scheme: dark) {
+  .nui-bg-primary {
+    --tw-bg-opacity: 1;
+    background-color: rgb(44 189 255 / var(--tw-bg-opacity));
+  }
+}
 .nui-bg-glass {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
   --tw-bg-opacity: 0.7;
@@ -409,6 +419,7 @@
   }
 }
 .nui-input {
+  appearance: none;
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
@@ -455,10 +466,11 @@
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 100ms;
+  min-height: 36px;
 }
-.nui-input:active,
-.nui-input:focus {
-  outline: none;
+.nui-input:active, .nui-input:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
   --tw-ring-opacity: 1;
@@ -675,6 +687,13 @@
   width: calc(100vw - 10%);
   max-width: 500px;
 }
+.nui-modal.fullscreen {
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0px;
+  }
 /* Text Styles  */
 .nui-hbar {
   display: flex;
@@ -750,6 +769,15 @@
 .nui-item {
   min-height: 40px;
   flex-grow: 1;
+  font-weight: 500;
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+@media (prefers-color-scheme: dark) {
+  .nui-item {
+    --tw-text-opacity: 1;
+    color: rgb(243 244 246 / var(--tw-text-opacity));
+  }
 }
 .nui-item:active {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
@@ -766,7 +794,7 @@
   position: relative;
   border-top-width: 1px;
   border-color: rgb(107 114 128 / var(--tw-border-opacity));
-  --tw-border-opacity: 0.5;
+  --tw-border-opacity: 0.3;
 }
 @media (prefers-color-scheme: dark) {
   .nui-divider {

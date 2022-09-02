@@ -53,6 +53,8 @@
   @apply space-x-2;
   min-height: 40px;
   @apply flex-grow;
+  @apply font-medium;
+  @apply text-gray-900 dark:text-gray-100;
 
   &:active {
     @apply ring ring-primary-500;
@@ -66,7 +68,7 @@
 .nui-divider {
   @apply w-full;
   @apply relative;
-  @apply border-t border-gray-500  border-opacity-50 dark:border-opacity-40;
+  @apply border-t border-gray-500  border-opacity-30 dark:border-opacity-40;
 }
 
 /* Switch */

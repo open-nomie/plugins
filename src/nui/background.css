@@ -6,6 +6,10 @@
   @apply dark:bg-white bg-black bg-opacity-10 dark:bg-opacity-10;
 }
 
+.nui-bg-primary {
+  @apply bg-primary-500 dark:bg-primary-400;
+}
+
 .nui-bg-glass {
   @apply dark:bg-gray-900
     bg-gray-100

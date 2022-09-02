@@ -30,6 +30,10 @@ class Person {
     }
   }
 
+  get name() {
+    return this.displayName || this.username;
+  }
+
   get birthdate() {
     if (this.birthday) {
       return plugin.dayjs(new Date(`${this.birthday}T12:00:00`));
@@ -94,6 +98,26 @@ const wait = (ms) => {
   })
 }
 
+
+const AvatarComponent = Vue.component('person-item', {
+  props: ['avatar', 'name', 'size'],
+  methods: {
+
+  },
+  template: `
+  <div class="nui-avatar inline-flex justify-center items-center rounded-full bg-cover bg-center nui-bg-primary" 
+      :style="{ width: size + 'px', height:size + 'px', backgroundImage: avatar ? 'url('+avatar+')' : '' }">
+    <div 
+      v-if="!avatar"
+      :style="{fontSize: size * 0.50 + 'px'}"
+      class="flex items-center uppercase font-semibold nui-text-solid">
+      {{(name || "").replace('@','').substring(0,2)}}
+    </div>
+  </div>
+  `
+})
+
+/* It's a Vue component that is used to render a person. */
 const PersonItem = Vue.component('person-item', {
   props: ['person'],
   methods: {
@@ -101,29 +125,20 @@ const PersonItem = Vue.component('person-item', {
       return plugin.dayjs(date);
     }
   },
+  components: {
+    'avatar': AvatarComponent
+  },
   template: `
   <button class="nui-item space-x-4" @click="$emit('click',person)">
-    <div class="avatar">
-      <img
-        class="w-12 h-12 rounded-full"
-        v-if="person.avatar"
-        :src="person.avatar"
-      />
-      <div
-        v-else
-        class="w-12 h-12 uppercase font-bold rounded-full bg-orange-500 text-white flex items-center justify-center"
-      >
-        {{(person.username || '').substring(0,2)}}
-      </div>
-    </div>
-    <main class="nui-filler">
+    <avatar :avatar="person.avatar" :name="person.name" size="42" />
+    <main class="nui-filler py-1">
       <h2 class="nui-title solid">
         {{person.displayName || username}}
       </h2>
       <p class="text-sm nui-text-600" v-if="person.latest">
         {{dayjs(person.latest).fromNow()}}
       </p>
-      <p class="nui-description text-red-500" v-else>
+      <p class="text-sm text-gray-400" v-else>
         No recent contact
       </p>
     </main>
@@ -151,7 +166,8 @@ new Vue({
     inNomie: true,
   }),
   components: {
-    'person-item': PersonItem
+    'person-item': PersonItem,
+    'avatar': AvatarComponent
   },
   async mounted() {
 
@@ -323,6 +339,9 @@ new Vue({
     },
     savePerson(person) {
       this.upsertPerson(person);
+      if (this.activePerson.username == this.editingPerson.username) {
+        this.openPerson(new Person(person));
+      }
       this.editingPerson = undefined;
     },
     upsertPerson(person) {
