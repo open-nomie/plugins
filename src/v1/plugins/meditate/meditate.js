@@ -12,11 +12,25 @@ const plugin = new NomiePlugin({
 let videos = [
 
   {
-    name: '2-Min Focus Meditation',
-    duration: '00:05:00',
+    name: '2-Min Morning Meditation',
+    duration: '00:02:00',
     description: 'Two minute meditation to start your day',
     note: "#meditation(00:02:00) with @MindfulBreaks",
     youtubeId: '41DEKf4KWdU',
+  },
+  {
+    name: '2-Min Calming Meditation',
+    duration: '00:02:00',
+    description: 'Two minute meditation to start your day',
+    note: "#meditation(00:02:00) calming with @TheSchoolOfLife",
+    youtubeId: 'Z4rRjGhN-gs',
+  },
+  {
+    name: '5-Min Morning Meditation',
+    duration: '00:05:00',
+    description: 'uplifting and refreshing combination of breathwork and affirmations.',
+    note: "#meditation(00:05:00) morning with @GreatMeditations",
+    youtubeId: 'YD5W5eZy90c',
   },
   {
     name: '5-Min Meditation',
