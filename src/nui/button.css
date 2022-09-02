@@ -1,0 +1,47 @@
+.nui-button {
+  @apply rounded-md;
+  @apply px-4 py-2;
+  @apply transition-all duration-100;
+  @apply transform;
+  @apply leading-tight;
+}
+.nui-button:active {
+  transform: scale(0.98);
+}
+
+.nui-button:focus {
+  outline: none;
+  @apply ring ring-current;
+  @apply ring-opacity-30;
+}
+.nui-button.solid:active {
+  @apply shadow-lg;
+}
+
+.nui-button.text {
+  @apply uppercase;
+  @apply font-semibold;
+}
+
+.nui-button.sm {
+  @apply px-3 py-2;
+  @apply text-sm;
+  line-height: 110%;
+}
+
+.nui-button.xs {
+  padding: 4px 6px;
+  @apply text-xs;
+}
+.nui-button.primary {
+  @apply text-primary-500;
+  @apply dark:text-primary-400;
+}
+.nui-button.solid {
+  @apply shadow-md;
+}
+.nui-button.primary.solid {
+  @apply dark:bg-primary-400;
+  @apply bg-primary-500;
+  @apply text-white;
+}

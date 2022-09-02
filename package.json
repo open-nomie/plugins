@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "webpack serve --mode=development --open",
     "build": "webpack --config webpack-prod.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:nui": "postcss src/nui/nui.css -o src/styles/nui@v1.css",
+    "dev:nui": "postcss src/nui/nui.css -o src/styles/nui@v1.css -w"
   },
   "keywords": [
     "nomie",
@@ -21,9 +23,12 @@
     "dayjs": "^1.11.5",
     "html-webpack-plugin": "^5.5.0",
     "markdown-it": "^13.0.1",
-    "postcss": "^8.4.4",
+    "postcss": "^8.4.16",
+    "postcss-cli": "^10.0.0",
+    "postcss-import": "^15.0.0",
     "postcss-loader": "^6.2.1",
-    "postcss-preset-env": "^7.0.1",
+    "postcss-nested": "^5.0.6",
+    "postcss-preset-env": "^7.8.0",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.0.1",
     "ts-loader": "^9.2.6",

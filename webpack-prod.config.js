@@ -1,6 +1,7 @@
 const config = require("./webpack.config");
 
-module.exports = {
-  ...config,
-  mode: "production",
-};
+
+module.exports = config.map((cnf) => {
+  cnf.mode = 'production';
+  return cnf;
+});

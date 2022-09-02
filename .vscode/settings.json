@@ -1,3 +1,4 @@
 {
-  "docwriter.style": "Auto-detect"
+  "docwriter.style": "Auto-detect",
+  "liveServer.settings.port": "30001"
 }

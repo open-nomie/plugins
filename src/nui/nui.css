@@ -1,0 +1,72 @@
+/* Title Styles */
+@import "background.css";
+@import "text.css";
+@import "button.css";
+@import "forms.css";
+@import "button-group.css";
+@import "title.css";
+@import "modal.css";
+
+/* Text Styles  */
+.nui-hbar {
+  @apply flex w-full items-center;
+}
+
+.nui-vbar {
+  @apply flex flex-col w-full justify-center;
+}
+
+.nui-toolbar {
+  @apply flex items-center;
+  @apply px-4 py-2;
+  min-height: 48px;
+}
+
+.nui-toolbar.shadow {
+  @apply shadow-md;
+}
+
+.nui-filler {
+  @apply min-w-0 
+    max-w-full
+    min-h-0
+    max-h-full
+    flex-grow
+    flex-shrink;
+}
+.nui-stiff {
+  @apply flex-grow-0 flex-shrink-0;
+}
+
+.nui-card {
+  @apply nui-bg-solid;
+  @apply shadow-lg;
+  @apply rounded-lg;
+  @apply border border-gray-500 border-opacity-20;
+}
+
+.nui-item {
+  @apply text-left;
+  @apply w-full;
+  @apply flex items-center;
+  @apply px-4 py-2;
+  @apply space-x-2;
+  min-height: 40px;
+  @apply flex-grow;
+
+  &:active {
+    @apply ring ring-primary-500;
+  }
+
+  .clickable {
+    @apply cursor-pointer;
+  }
+}
+
+.nui-divider {
+  @apply w-full;
+  @apply relative;
+  @apply border-t border-gray-500  border-opacity-50 dark:border-opacity-40;
+}
+
+/* Switch */

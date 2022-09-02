@@ -1,0 +1,114 @@
+.nui-form {
+  @apply flex flex-col;
+  @apply w-full;
+  @apply space-y-4;
+}
+
+.nui-fieldset {
+  @apply w-full;
+  @apply flex flex-col space-y-2;
+
+  label {
+    @apply text-sm;
+    @apply text-black dark:text-white text-opacity-80;
+    @apply font-medium;
+  }
+
+  &:focus-within label {
+    @apply text-opacity-100;
+  }
+
+  &:invalid-within label {
+    @apply text-red-500;
+  }
+
+  &.inline {
+    label {
+      @apply w-20;
+      @apply leading-tight;
+      @apply flex-shrink-0 flex-grow-0;
+    }
+    input,
+    select {
+      @apply flex-grow flex-shrink;
+    }
+    @apply flex flex-row space-x-4 items-center justify-center;
+  }
+}
+
+.nui-description {
+  @apply text-xs leading-tight;
+  @apply text-gray-400 dark:text-gray-600;
+}
+
+.nui-input {
+  @apply nui-bg-solid;
+  @apply border border-gray-500 border-opacity-20 dark:border-gray-400 dark:border-opacity-40;
+  @apply py-2 px-3;
+  @apply rounded-lg;
+  @apply flex;
+  @apply dark:text-white;
+  @apply shadow-sm;
+  @apply transform-gpu transform transition-all duration-100;
+}
+.nui-input:active,
+.nui-input:focus {
+  outline: none;
+  @apply ring ring-primary-500;
+  @apply shadow-lg;
+}
+
+.nui-input:not(:placeholder-shown):invalid {
+  @apply text-red-500;
+  @apply ring ring-red-500;
+}
+
+/* The switch - the box around the slider */
+.nui-switch {
+  @apply rounded-full;
+  @apply relative;
+  @apply inline-block;
+  @apply w-14;
+  @apply h-8;
+
+  /* Hide default HTML checkbox */
+  input {
+    @apply opacity-0 h-0 w-0;
+    @apply rounded-full;
+  }
+
+  .nui-control {
+    @apply rounded-full;
+    @apply absolute;
+    @apply cursor-pointer;
+    @apply top-0 left-0 right-0 bottom-0;
+    @apply transition-all duration-200;
+    @apply bg-gray-300 dark:bg-gray-700;
+  }
+
+  .nui-control:before {
+    @apply absolute;
+    content: "";
+    @apply h-6 w-6;
+    @apply left-1 top-1;
+    @apply rounded-full;
+    @apply nui-bg-solid;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+
+  input:checked + .nui-control {
+    @apply bg-primary-500;
+  }
+
+  input:focus + .nui-control {
+    box-shadow: 0 0 1px #2196f3;
+  }
+
+  input:checked + .nui-control:before {
+    -webkit-transform: translateX(24px);
+    -ms-transform: translateX(24px);
+    transform: translateX(24px);
+  }
+}
+/* // end switch */

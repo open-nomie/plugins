@@ -1,0 +1,54 @@
+.nui-bg-solid {
+  @apply bg-white dark:bg-black;
+}
+
+.nui-bg-faded {
+  @apply dark:bg-white bg-black bg-opacity-10 dark:bg-opacity-10;
+}
+
+.nui-bg-glass {
+  @apply dark:bg-gray-900
+    bg-gray-100
+    bg-opacity-70 
+    dark:bg-opacity-60
+    backdrop-blur-sm;
+}
+
+.nui-bg-50 {
+  @apply bg-gray-50 dark:bg-gray-900;
+}
+
+.nui-bg-100 {
+  @apply bg-gray-100 dark:bg-gray-900;
+}
+
+.nui-bg-200 {
+  @apply bg-gray-200 dark:bg-gray-800;
+}
+
+.nui-bg-300 {
+  @apply bg-gray-300 dark:bg-gray-700;
+}
+.nui-bg-400 {
+  @apply bg-gray-400 dark:bg-gray-600;
+}
+
+.nui-bg-500 {
+  @apply bg-gray-500;
+}
+
+.nui-bg-600 {
+  @apply bg-gray-600 dark:bg-gray-400;
+}
+
+.nui-bg-700 {
+  @apply bg-gray-700 dark:bg-gray-300;
+}
+
+.nui-bg-800 {
+  @apply bg-gray-800 dark:bg-gray-200;
+}
+
+.nui-bg-900 {
+  @apply bg-gray-900 dark:bg-gray-100;
+}

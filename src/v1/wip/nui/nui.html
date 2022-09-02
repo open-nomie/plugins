@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/styles/nui@v1.css" rel="stylesheet" />
+    <title>NUI Tester</title>
+  </head>
+  <body class="nui-bg-100">
+    <header class="nui-toolbar nui-bg-solid shadow">
+      <h1 class="nui-title nui-text-800">Welcome to the Tester</h1>
+    </header>
+    <main class="nui-text-900 p-5">
+      <h2 class="nui-title md mb-4">Buttons</h2>
+      <section
+        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4"
+      >
+        <button class="nui-button primary text">Primary</button>
+        <button class="nui-button solid primary">Solid Primary</button>
+
+        <button class="nui-button sm primary text">Primary</button>
+        <button class="nui-button sm solid primary">Solid Primary</button>
+
+        <button class="nui-button xs primary text">Primary</button>
+        <button class="nui-button xs solid primary">Solid Primary</button>
+      </section>
+
+      <section class="max-w-md">
+        <header class="nui-toolbar">
+          <section class="nui-button-group">
+            <button class="nui-button">Title</button>
+            <button class="nui-button">Other</button>
+            <button class="nui-button">Pizza</button>
+          </section>
+        </header>
+        <form class="nui-form p-4 bg-white dark:bg-black rounded-md">
+          <h1 class="nui-title nui-text-xl">Form Test</h1>
+          <fieldset class="nui-fieldset">
+            <label>Email</label>
+            <input
+              required
+              type="email"
+              class="nui-input"
+              placeholder="Your Email Address"
+            />
+            <p class="nui-description">We will use it for something else</p>
+          </fieldset>
+          <fieldset class="nui-fieldset">
+            <label for="first-name">First Name</label>
+            <input
+              name="first-name"
+              required
+              type="text"
+              class="nui-input"
+              placeholder="Your First Name"
+            />
+          </fieldset>
+          <fieldset class="nui-fieldset inline">
+            <label for="first-name">Phone</label>
+            <input
+              name="first-name"
+              required
+              type="tel"
+              class="nui-input"
+              placeholder="317-555-5555"
+            />
+          </fieldset>
+          <fieldset class="nui-fieldset inline">
+            <label for="birthday">Birthday</label>
+            <input
+              name="birthday"
+              required
+              type="date"
+              class="nui-input"
+              placeholder="Their Birthday"
+            />
+          </fieldset>
+          <fieldset class="nui-fieldset">
+            <div class="nui-hbar space-x-2">
+              <label class="nui-switch">
+                <input type="checkbox" />
+                <span class="nui-control"></span>
+              </label>
+              <label class="nui-filler"> Remember Location? </label>
+            </div>
+          </fieldset>
+          <hr class="nui-divider" />
+          <fieldset>
+            <section class="nui-button-group compact">
+              <button class="nui-button active">Yes</button>
+              <button class="nui-button">No</button>
+              <button class="nui-button">Maybe</button>
+              <button class="nui-button">Sometimes</button>
+            </section>
+          </fieldset>
+          <section class="nui-hbar space-x-4">
+            <div class="nui-filler"></div>
+            <button type="reset" class="nui-button">Reset</button>
+            <button class="nui-button primary solid">Submit Data</button>
+          </section>
+        </form>
+      </section>
+      <div class="mt-4" />
+      <section class="grid grid-cols-2 gap-4 max-w-md">
+        <section class="nui-card">
+          <button class="nui-item">
+            <span>🔥</span>
+            <h3 class="nui-title">My Item</h3>
+          </button>
+          <hr class="nui-divider" style="padding-left: 26px" />
+          <button class="nui-item">
+            <span>⛵️</span>
+            <h3 class="nui-title">More Items</h3>
+          </button>
+          <hr class="nui-divider" style="padding-left: 26px" />
+          <button class="nui-item">
+            <span>⛵️</span>
+            <main>
+              <h3 class="nui-title">More Items</h3>
+              <p class="nui-description">3 Unread</p>
+            </main>
+          </button>
+          <hr class="nui-divider" style="left: 26px" />
+        </section>
+        <section class="nui-card">Hi there</section>
+      </section>
+    </main>
+  </body>
+</html>

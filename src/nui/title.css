@@ -1,0 +1,21 @@
+.nui-title {
+  @apply font-bold;
+  @apply text-lg;
+  @apply leading-tight;
+  @apply text-gray-800 dark:text-gray-200;
+}
+.nui-title.solid {
+  @apply text-black dark:text-white;
+}
+
+.nui-title.primary {
+  @apply text-primary-500 dark:text-primary-400;
+}
+
+.nui-title.md {
+  @apply text-base;
+}
+
+.nui-title.sm {
+  @apply text-sm;
+}

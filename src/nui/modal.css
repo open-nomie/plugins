@@ -1,0 +1,16 @@
+.nui-backdrop {
+  @apply fixed;
+  @apply z-50;
+  @apply w-screen h-screen;
+  @apply bg-gray-500 backdrop-blur-sm backdrop-filter bg-opacity-70;
+  @apply flex flex-col items-center justify-center;
+}
+
+.nui-modal {
+  @apply rounded-2xl;
+  @apply bg-gray-100 dark:bg-gray-900;
+  max-height: calc(100vh - 20%);
+  min-height: calc(50vh);
+  width: calc(100vw - 10%);
+  max-width: 500px;
+}
