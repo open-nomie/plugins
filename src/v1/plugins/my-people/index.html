@@ -69,46 +69,50 @@
               v-if="activePersonView == 'info'"
             >
               <ul class="nui-card mb-4">
-                <div v-if="activePerson.birthday">
-                  <li class="nui-item text-sm justify-between">
-                    <div class="font-normal nui-text-400">Birthday</div>
-
-                    <h2 class="text-green-500" v-if="activePerson.isBirthday">
-                      🎁 Today!
-                    </h2>
-                    <h2 v-else class="">
-                      <span class="nui-text-inverse font-semibold"
-                        >{{activePerson.birthdayFormatted}}</span
-                      >
-                      <span class="nui-text-600"
-                        >({{activePerson.birthdayFromNow}} days)</span
-                      >
-                    </h2>
-                  </li>
-                  <hr class="nui-divider" />
-                </div>
-
                 <li class="nui-item text-sm justify-between">
                   <div class="font-normal nui-text-400">Last Interaction</div>
 
                   <h3 class="nui-title text-sm" v-if="activePerson.latest">
                     {{dayjs(activePerson.latest).fromNow()}}
                   </h3>
-                  <h3 class="nui-title text-sm" v-else>None</h3>
+                  <h3 class="nui-title text-sm" v-else>Unknown</h3>
                 </li>
+                <hr nui />
+                <div>
+                  <li class="nui-item text-sm justify-between">
+                    <div class="font-normal nui-text-400">
+                      <div>Birthday</div>
+                    </div>
+
+                    <div class="nui-title text-sm solid">
+                      {{activePerson.birthdayFormatted}}
+                    </div>
+
+                    <div
+                      class="text-green-500 font-semibold uppercase"
+                      v-if="activePerson.isBirthday"
+                    >
+                      Today 🎉
+                    </div>
+                    <div
+                      class="text-gray-400"
+                      v-else-if="activePerson.birthday"
+                    >
+                      In {{activePerson.birthdayFromNow}} days
+                    </div>
+                    <button
+                      v-else
+                      @click="editPerson(activePerson)"
+                      class="text-primary-500 underline"
+                    >
+                      Set
+                    </button>
+                  </li>
+                  <hr class="nui-divider" />
+                </div>
               </ul>
 
               <div id="user-actions" class="nui-card mt-2">
-                <div v-if="!activePerson.birthday">
-                  <button
-                    class="nui-item nui-text-inverse"
-                    @click="editPerson(activePerson)"
-                  >
-                    <span class="text-2xl">🎁</span>
-                    <span>Add Birthday</span>
-                  </button>
-                  <hr class="nui-divider" />
-                </div>
                 <div id="phone-contacts" v-if="activePerson.phone">
                   <a
                     class="nui-item space-x-4"
@@ -137,14 +141,6 @@
                     <span class="text-2xl">📧</span>
                     <span>Send an Email</span>
                   </a>
-                  <button
-                    v-else
-                    class="nui-item nui-text-inverse"
-                    @click="editPerson(activePerson)"
-                  >
-                    <span class="text-2xl">📧</span>
-                    <span>Add Email</span>
-                  </button>
                 </div>
               </div>
 
@@ -161,7 +157,15 @@
                   @click="editPerson(activePerson)"
                 >
                   <span class="text-2xl">📇</span>
-                  <span>Edit {{activePerson.name}}'s Info</span>
+                  <span>Edit Birthday and Contact</span>
+                </button>
+                <hr class="nui-divider" />
+                <button
+                  class="nui-item nui-text-inverse space-x-4"
+                  @click="plugin.openTrackableEditor({tag:`@${activePerson.username}`})"
+                >
+                  <span class="text-2xl">🛠</span>
+                  <span>Open in Nomie's Editor</span>
                 </button>
               </section>
             </main>
@@ -245,7 +249,7 @@
                     >{{note.location}}</span
                   >
                 </p>
-                <p class="mt-2">{{note.note}}</p>
+                <p class="mt-2 nui-text-800">{{note.note}}</p>
               </article>
             </main>
 

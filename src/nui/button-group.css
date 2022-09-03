@@ -2,7 +2,6 @@
   @apply w-full;
   @apply flex items-center;
   @apply divide-x divide-gray-500 divide-opacity-30;
-  @apply bg-blue-500;
   @apply rounded-lg overflow-hidden;
   @apply p-1;
   @apply border border-gray-500 border-opacity-20 dark:border-gray-400 dark:border-opacity-40;
@@ -14,7 +13,7 @@
   }
 
   .active {
-    @apply bg-primary-500 text-white;
+    @apply bg-primary-600 text-white;
   }
   &.compact {
     > button {

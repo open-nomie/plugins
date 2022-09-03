@@ -65,7 +65,8 @@
   }
 }
 
-.nui-divider {
+.nui-divider,
+hr[nui] {
   @apply w-full;
   @apply relative;
   @apply border-t border-gray-500  border-opacity-30 dark:border-opacity-40;

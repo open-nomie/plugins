@@ -135,10 +135,10 @@ const PersonItem = Vue.component('person-item', {
       <h2 class="nui-title solid">
         {{person.displayName || username}}
       </h2>
-      <p class="text-sm nui-text-600" v-if="person.latest">
+      <p class="text-sm nui-text-600 font-normal" v-if="person.latest">
         {{dayjs(person.latest).fromNow()}}
       </p>
-      <p class="text-sm text-gray-400" v-else>
+      <p class="text-sm nui-text-600 font-normal" v-else>
         No recent contact
       </p>
     </main>
@@ -285,6 +285,8 @@ new Vue({
         await plugin.createNote(this.checkInNote);
         this.clearActivePerson();
         this.saving = false;
+        await wait(100);
+        this.getLatest();
       }
     },
     clearActivePerson() {

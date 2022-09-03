@@ -21,19 +21,22 @@
   &:invalid-within label {
     @apply text-red-500;
   }
+}
 
-  &.inline {
-    label {
-      @apply w-20;
-      @apply leading-tight;
-      @apply flex-shrink-0 flex-grow-0;
-    }
-    input,
-    select {
-      @apply flex-grow flex-shrink;
-    }
-    @apply flex flex-row space-x-4 items-center justify-center;
+.nui-fieldset.inline {
+  @apply items-center;
+  @apply space-y-0;
+  label {
+    @apply w-20;
+    @apply leading-tight;
+    @apply flex-shrink-0 flex-grow-0;
   }
+  input,
+  select {
+    @apply flex-grow flex-shrink;
+    @apply mt-0;
+  }
+  @apply flex flex-row space-x-4 items-center justify-center;
 }
 
 .nui-description {
@@ -58,6 +61,10 @@
   @apply outline-none;
   @apply ring ring-primary-500;
   @apply shadow-lg;
+}
+
+.nui-input.transparent {
+  @apply border-transparent;
 }
 
 .nui-input:not(:placeholder-shown):invalid {

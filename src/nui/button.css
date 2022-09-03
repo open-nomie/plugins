@@ -1,5 +1,5 @@
 .nui-button {
-  @apply rounded-md;
+  @apply rounded-lg;
   @apply px-4 py-2;
   @apply transition-all duration-100;
   @apply transform;
@@ -45,7 +45,6 @@
   @apply shadow-md;
 }
 .nui-button.primary.solid {
-  @apply dark:bg-primary-400;
-  @apply bg-primary-500;
+  @apply bg-primary-600;
   @apply text-white;
 }
