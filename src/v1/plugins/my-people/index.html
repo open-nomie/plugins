@@ -9,8 +9,17 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
     <script src="/v1/nomie-plugin.js"></script>
     <link href="/styles/nui@v1.css" rel="stylesheet" />
+
+    <style>
+      body.loading {
+        background-color: #000;
+      }
+      body.loading div {
+        display: none;
+      }
+    </style>
   </head>
-  <body class="nui-bg-100">
+  <body class="nui-bg-100 loading">
     <div id="app">
       <!-- ACTIVE PERSON MODAL -->
       <transition name="slide">
@@ -124,7 +133,7 @@
                   <hr class="nui-divider" />
                   <a
                     class="nui-item space-x-4"
-                    :href="`sms:${activePerson.phone}`"
+                    :href="`sms://${activePerson.phone}`"
                   >
                     <span class="text-2xl">💬</span>
                     <h2>Message</h2>

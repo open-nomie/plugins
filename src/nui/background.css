@@ -13,8 +13,8 @@
 .nui-bg-glass {
   @apply dark:bg-gray-900
     bg-gray-100
-    bg-opacity-70 
-    dark:bg-opacity-60
+    bg-opacity-80 
+    dark:bg-opacity-70
     backdrop-blur-sm;
 }
 

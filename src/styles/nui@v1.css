@@ -34,7 +34,7 @@
 }
 .nui-bg-glass {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
-  --tw-bg-opacity: 0.7;
+  --tw-bg-opacity: 0.8;
   --tw-backdrop-blur: blur(4px);
   backdrop-filter: var(--tw-backdrop-filter);
 }
@@ -44,7 +44,7 @@
     background-color: rgb(17 24 39 / var(--tw-bg-opacity));
   }
   .nui-bg-glass {
-    --tw-bg-opacity: 0.6;
+    --tw-bg-opacity: 0.7;
   }
 }
 .nui-bg-50 {

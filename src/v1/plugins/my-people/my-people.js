@@ -170,7 +170,7 @@ new Vue({
     'avatar': AvatarComponent
   },
   async mounted() {
-
+    document.body.classList.remove('loading');
     /**
      * on UI Opened
      * Gets fired when the user opens the plugin modal
