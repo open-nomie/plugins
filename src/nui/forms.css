@@ -67,6 +67,11 @@
   @apply border-transparent;
 }
 
+.nui-input.compact {
+  @apply py-px px-2;
+  min-height: 28px;
+}
+
 .nui-input:not(:placeholder-shown):invalid {
   @apply text-red-500;
   @apply ring ring-red-500;

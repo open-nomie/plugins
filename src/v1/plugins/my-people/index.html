@@ -125,10 +125,14 @@
                 <div id="phone-contacts" v-if="activePerson.phone">
                   <a class="nui-item space-x-4" :href="`tel:${cleanPhone}`">
                     <span class="text-2xl">📱</span>
-                    <h2>Call {{activePerson.phone}}</h2>
+                    <h2>{{activePerson.phone}}</h2>
                   </a>
                   <hr class="nui-divider" />
-                  <a class="nui-item space-x-4" :href="`sms:${cleanPhone}`">
+                  <a
+                    class="nui-item space-x-4"
+                    target="_blank"
+                    :href="`sms:${cleanPhone}`"
+                  >
                     <span class="text-2xl">💬</span>
                     <h2>Message</h2>
                   </a>
@@ -137,12 +141,13 @@
 
                 <div id="user-email">
                   <a
-                    :href="`mailto://${activePerson.email}`"
+                    target="_blank"
+                    :href="`mailto:${activePerson.email}`"
                     class="nui-item space-x-4"
                     v-if="activePerson.email"
                   >
                     <span class="text-2xl">📧</span>
-                    <span>Send an Email</span>
+                    <span>Email</span>
                   </a>
                 </div>
               </div>
@@ -288,7 +293,7 @@
                 v-if="editingPerson.avatar"
                 class="w-4 h-4 rounded-full overflow-hidden"
               />
-              <h2>{{editingPerson.name}}</h2>
+              <h2 class="nui-title solid">{{editingPerson.name}}</h2>
             </header>
             <div class="flex flex-col space-y-2 p-4 nui-filler overflow-y-auto">
               <fieldset class="nui-fieldset inline">
@@ -408,7 +413,9 @@
         <section class="nui-card" v-if="needsAttention.length">
           <header class="rounded-t-lg nui-toolbar space-x-2 text-sm shadow-lg">
             <span class="text-red-500">⚠️</span>
-            <h1 class="nui-title nui-filler text-sm text-red-500">
+            <h1
+              class="nui-title nui-filler text-sm text-orange-600 dark:text-orange-400"
+            >
               Needs Attention
             </h1>
           </header>
@@ -424,7 +431,18 @@
 
         <section class="nui-card">
           <header class="rounded-t-lg nui-toolbar space-x-2 text-sm shadow-lg">
-            <h1 class="nui-title text-sm text-gray-500">My People</h1>
+            <h1 class="nui-title text-sm text-gray-500 nui-filler">
+              My People
+            </h1>
+
+            <span class="text-gray-500 pr-1">Sort</span>
+            <select @change="setSort" class="nui-input compact" v-model="sort">
+              <option value="attention">Up Next</option>
+              <option value="oldest">Oldest</option>
+              <option value="newest">Recent</option>
+              <option value="a-z">A-Z</option>
+              <option value="z-a">Z-A</option>
+            </select>
           </header>
           <div
             class="leading-tight text-center p-4 text-sm"

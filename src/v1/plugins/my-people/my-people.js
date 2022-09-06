@@ -45,13 +45,18 @@ class Person {
     if (this.maxNoContactDays) {
       let last = plugin.dayjs(this.latest || '2001-01-01');
       let daysDiff = plugin.dayjs().diff(last, 'days')
-      if (daysDiff >= this.maxNoContactDays) {
-        return daysDiff;
-      } else if ((daysDiff * 1.5) >= this.maxNoContactDays) {
-        return 0.5;
-      }
+      let maxDiff = this.maxNoContactDays - daysDiff;
+      console.log(`${this.username} hasn't been talked about in ${daysDiff} days, meaning theres ${maxDiff} days left before you have to contact them`);
+      return maxDiff;
+      // if (daysDiff >= this.maxNoContactDays) {
+      //   return daysDiff || 0;
+      // } else if ((daysDiff * 1.5) >= this.maxNoContactDays) {
+      //   return 0.5;
+      // } else {
+      //   return 0;
+      // }
     } else {
-      return -1;
+      return 1000;
     }
   }
 
@@ -144,6 +149,7 @@ const PersonItem = Vue.component('person-item', {
       </p>
     </main>
     
+    <div v-if="person.noContactScore == 3" class="text-orange-500">🕐</div>
   </button>
   `
 })
@@ -165,6 +171,7 @@ new Vue({
     saving: false,
     checkInNote: '',
     inNomie: true,
+    sort: localStorage.getItem('mp-sort') || 'oldest'
   }),
   components: {
     'person-item': PersonItem,
@@ -205,14 +212,34 @@ new Vue({
     peopleArray() {
       return Object.keys(this.people || {}).map((username) => {
         return this.people[username];
-      }).filter(p => !p.hidden)
+      })
     },
     cleanPhone() {
       return this.activePerson.phone.replace(/[^a-z0-9]/g, '')
     },
+
+
     everyoneElse() {
+      const stripName = (n) => {
+        return `${n || ''}`.replace('@', '');
+      }
       return this.peopleArray.filter((p) => {
-        return !p.isBirthday && p.noContactScore !== 1;
+        return !p.isBirthday && p.noContactScore > 2;
+      }).filter(p => !p.hidden).sort((a, b) => {
+
+        if (this.sort == 'oldest') {
+          return a.latest > b.latest ? 1 : -1;
+        } else if (this.sort == 'newest') {
+          return a.latest < b.latest ? 1 : -1
+        } else if (this.sort == 'a-z') {
+          return stripName(a.name).toLowerCase() > stripName(b.name).toLowerCase() ? 1 : -1
+        } else if (this.sort == 'z-a') {
+          return stripName(a.name).toLowerCase() < stripName(b.name).toLowerCase() ? 1 : -1
+        } else if (this.sort == 'attention') {
+          console.log(`${a.noContactScore} ${b.noContactScore}`);
+          return a.noContactScore > b.noContactScore ? 1 : -1
+        }
+        return true;
       })
     },
     checkinOptions() {
@@ -271,7 +298,7 @@ new Vue({
     },
     needsAttention() {
       return this.peopleArray.filter((p) => {
-        return !p.isBirthday && p.noContactScore > 0
+        return !p.isBirthday && p.noContactScore < 2
       }).sort((a, b) => {
         return a.noContactScore > b.noContactScore ? 1 : -1
       })
@@ -280,6 +307,10 @@ new Vue({
   methods: {
     dayjs(date) {
       return plugin.dayjs(date);
+    },
+    setSort(evt) {
+      const value = evt.target.value
+      localStorage.setItem('mp-sort', value);
     },
     async saveNote() {
       this.saving = true;

@@ -498,6 +498,13 @@
 .nui-input.transparent {
   border-color: transparent;
 }
+.nui-input.compact {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  min-height: 28px;
+}
 .nui-input:not(:placeholder-shown):invalid {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
