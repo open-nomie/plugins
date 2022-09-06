@@ -123,18 +123,12 @@
 
               <div id="user-actions" class="nui-card mt-2">
                 <div id="phone-contacts" v-if="activePerson.phone">
-                  <a
-                    class="nui-item space-x-4"
-                    :href="`tel://${activePerson.phone}`"
-                  >
+                  <a class="nui-item space-x-4" :href="`tel:${cleanPhone}`">
                     <span class="text-2xl">📱</span>
                     <h2>Call {{activePerson.phone}}</h2>
                   </a>
                   <hr class="nui-divider" />
-                  <a
-                    class="nui-item space-x-4"
-                    :href="`sms://${activePerson.phone}`"
-                  >
+                  <a class="nui-item space-x-4" :href="`sms:${cleanPhone}`">
                     <span class="text-2xl">💬</span>
                     <h2>Message</h2>
                   </a>

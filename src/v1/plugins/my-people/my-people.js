@@ -207,6 +207,9 @@ new Vue({
         return this.people[username];
       }).filter(p => !p.hidden)
     },
+    cleanPhone() {
+      return this.activePerson.phone.replace(/[^a-z0-9]/g, '')
+    },
     everyoneElse() {
       return this.peopleArray.filter((p) => {
         return !p.isBirthday && p.noContactScore !== 1;
