@@ -1,3 +1,4 @@
+
 /* This is the plugin object. It's a wrapper around the Nomie Plugin API. */
 const plugin = new NomiePlugin({
   name: "My People",
@@ -45,7 +46,7 @@ class Person {
       let last = plugin.dayjs(this.latest || '2001-01-01');
       let daysDiff = plugin.dayjs().diff(last, 'days')
       if (daysDiff >= this.maxNoContactDays) {
-        return 1;
+        return daysDiff;
       } else if ((daysDiff * 1.5) >= this.maxNoContactDays) {
         return 0.5;
       }
@@ -314,10 +315,10 @@ new Vue({
           } else {
 
             const noteDate = new Date(note.end);
-            const latest = new Date(allPeople[ele.id].latest);
+            const lastUserDate = allPeople[ele.id].latest || '1960-01-01';
+            const latest = new Date(lastUserDate);
 
             if (latest < noteDate) {
-              console.log("🔥🔥🔥🔥🔥🔥🔥")
               hasChanges = true;
               allPeople[ele.id].latest = note.end;
             }
@@ -360,14 +361,28 @@ new Vue({
     },
     upsertPerson(person) {
       if (!person instanceof Person) throw error('Must be a person class to upsert a person');
-      let current = this.people[person.username];
+      let allPeople = { ...this.people };
+      let current = allPeople[person.username];
       if (current) {
-        this.people[person.username] = new Person({ ...current, ...person });
+        allPeople[person.username] = new Person({ ...current, ...person });
       } else {
-        this.people[person.username] = person;
+        allPeople[person.username] = person;
       }
+      this.people = allPeople;
       console.log(`Added ${person.username}`, this.people);
       plugin.storage.setItem('people', this.people);
+
+    },
+    async deletePerson(person) {
+      const confirmed = await plugin.confirm(`Delete ${person.username} from the My People plugin?`, 'This will not remove them from Nomie');
+      if (confirmed.value === true) {
+        if (person == this.activePerson) this.activePerson = undefined;
+
+        const allPeople = { ...this.people };
+        delete allPeople[person.username];
+        plugin.storage.setItem('people', allPeople);
+        this.people = allPeople;
+      }
 
     },
     saveStorage() {

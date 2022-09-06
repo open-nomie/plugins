@@ -166,7 +166,7 @@
                   @click="editPerson(activePerson)"
                 >
                   <span class="text-2xl">📇</span>
-                  <span>Edit Birthday and Contact</span>
+                  <span>Edit Info...</span>
                 </button>
                 <hr class="nui-divider" />
                 <button
@@ -175,6 +175,14 @@
                 >
                   <span class="text-2xl">🛠</span>
                   <span>Open in Nomie's Editor</span>
+                </button>
+                <hr class="nui-divider" />
+                <button
+                  class="nui-item nui-text-inverse space-x-4"
+                  @click="deletePerson(activePerson)"
+                >
+                  <span class="text-2xl">🗑</span>
+                  <span class="text-red-500">Delete</span>
                 </button>
               </section>
             </main>
@@ -439,8 +447,8 @@
           </div>
         </section>
       </div>
-      <footer class="nui-bg-glass nui-toolbar sticky space-x-2 bottom-0">
-        <h2>My People</h2>
+      <footer class="nui-bg-glass nui-toolbar sticky space-x-1 pl-6 bottom-0">
+        <h2 class="nui-text-primary">My People</h2>
         <button
           class="nui-button nui-text-2xl nui-text-inverse"
           @click="selectPersonTrackable()"

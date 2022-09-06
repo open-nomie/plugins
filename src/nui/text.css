@@ -20,6 +20,10 @@
 .nui-text-inverse {
   @apply text-black dark:text-white;
 }
+.nui-text-primary {
+  @apply text-primary-500;
+  @apply dark:text-primary-400;
+}
 
 .nui-text-50 {
   @apply text-gray-50 dark:text-gray-900;
