@@ -728,10 +728,10 @@ select.nui-input.compact {
   max-width: 500px;
 }
 .nui-modal.fullscreen {
-    max-width: calc(100vw - 20px);
-    max-height: calc(100vh - 20px);
-    width: calc(100vw - 20px);
-    height: calc(100vh - 20px);
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
+    width: calc(100vw - 40px);
+    height: calc(100vh - 40px);
   }
 /* Text Styles  */
 .nui-hbar {
