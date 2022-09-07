@@ -39,6 +39,20 @@
   @apply flex flex-row space-x-4 items-center justify-center;
 }
 
+select.nui-input {
+  @apply relative;
+  @apply pr-7;
+  background-repeat: no-repeat;
+  background-size: 10px 5.8px;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyOCAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTAgMEwxMy43MTQzIDE2TDI3LjQyODYgMEgwWiIgZmlsbD0iIzdCN0I3QiIgZmlsbC1vcGFjaXR5PSIwLjY4Ii8+Cjwvc3ZnPgo=");
+  background-position-x: calc(100% - 10px);
+  background-position-y: calc(100% * 0.5);
+}
+
+select.nui-input.compact {
+  @apply pr-7;
+}
+
 .nui-description {
   @apply text-xs leading-tight;
   @apply text-gray-400 dark:text-gray-600;

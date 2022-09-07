@@ -422,6 +422,18 @@
   margin-right: calc(1rem * var(--tw-space-x-reverse));
   margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
 }
+select.nui-input {
+  position: relative;
+  padding-right: 1.75rem;
+  background-repeat: no-repeat;
+  background-size: 10px 5.8px;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyOCAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTAgMEwxMy43MTQzIDE2TDI3LjQyODYgMEgwWiIgZmlsbD0iIzdCN0I3QiIgZmlsbC1vcGFjaXR5PSIwLjY4Ii8+Cjwvc3ZnPgo=");
+  background-position-x: calc(100% - 10px);
+  background-position-y: calc(100% * 0.5);
+}
+select.nui-input.compact {
+  padding-right: 1.75rem;
+}
 .nui-description {
   font-size: 0.75rem;
   line-height: 1.25;
