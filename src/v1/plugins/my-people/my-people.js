@@ -1,92 +1,16 @@
 
+
 /* This is the plugin object. It's a wrapper around the Nomie Plugin API. */
 const plugin = new NomiePlugin({
   name: "My People",
   addToCaptureMenu: true,
   addToMoreMenu: true,
   emoji: "👨‍👩‍👧‍👦",
-  version: "0.2",
+  version: "0.4",
   description: "Keep up with the people that matter the most.",
   uses: ['createNote', 'selectTrackables', 'searchNotes'],
 });
 
-class Person {
-  constructor(starter = {}) {
-    this.username = starter.username;
-    this.displayName = starter.displayName;
-    this.birthday = starter.birthday;
-    this.frequency = starter.frequency
-    this.notes = starter.notes
-    this.avatar = starter.avatar
-    this.latest = starter.latest
-    this.hidden = starter.hidden ? true : false;
-    this.email = starter.email;
-    this.phone = starter.phone;
-    this.maxNoContactDays = starter.maxNoContactDays;
-  }
-
-  get age() {
-    if (this.birthday) {
-      return plugin.dayjs().diff(this.birthdate, 'years');
-    }
-  }
-
-  get name() {
-    return this.displayName || this.username;
-  }
-
-  get birthdate() {
-    if (this.birthday) {
-      return plugin.dayjs(new Date(`${this.birthday}T12:00:00`));
-    }
-  }
-
-  get noContactScore() {
-    if (this.maxNoContactDays) {
-      let last = plugin.dayjs(this.latest || '2001-01-01');
-      let daysDiff = plugin.dayjs().diff(last, 'days')
-      let maxDiff = this.maxNoContactDays - daysDiff;
-      return maxDiff;
-    } else {
-      return 1000;
-    }
-  }
-
-  get isBirthday() {
-    if (this.birthday) {
-      const now = plugin.dayjs();
-      let birthdate = this.birthdate.year(now.year());
-      return birthdate.toDate().toDateString() == now.toDate().toDateString();
-    } else {
-      return false;
-    }
-  }
-
-  get nextBirthdate() {
-    let now = plugin.dayjs();
-    let birthdate = this.birthdate;
-
-    if (birthdate.year(now.year()).toDate().getTime() < new Date().getTime()) {
-      birthdate = birthdate.year(now.add(1, 'year').year());
-    } else {
-      birthdate = birthdate.year(now.year());
-    }
-    return birthdate;
-  }
-
-  get birthdayFromNow() {
-    if (this.birthday) {
-      let next = this.nextBirthdate;
-      return next.diff(plugin.dayjs(), 'days');
-    }
-  }
-
-  get birthdayFormatted() {
-    if (this.birthday) {
-      return this.nextBirthdate.format('Do MMM');
-    }
-  }
-}
 
 const wait = (ms) => {
   return new Promise((resolve) => {
@@ -215,7 +139,8 @@ new Vue({
         return `${n || ''}`.replace('@', '');
       }
       return this.peopleArray.filter((p) => {
-        return !p.isBirthday && p.noContactScore > 2;
+        // return !p.isBirthday && p.noContactScore > 2;
+        return true;
       }).filter(p => !p.hidden).sort((a, b) => {
 
         if (this.sort == 'oldest') {
@@ -328,36 +253,55 @@ new Vue({
     addToNote(str) {
       this.checkInNote = [this.checkInNote, str].join(' ');
     },
+    /**
+     * Get 30 days of notes
+     * extract @people to compile the this.people
+     * @returns 
+     */
     async getLatest() {
       let hasChanges = false;
+      // Search all notes
       const allNotes = await plugin.searchNotes('', new Date(), 30);
+      // Filter out only notes with elements that have a person
       const peopleNotes = allNotes.filter(note => {
         return note.elements.find(e => e.type == 'person')
       })
+      // Create a standalone object
       const allPeople = { ...this.people };
+      // Loop over the people notes
       peopleNotes.forEach((note) => {
+        // Loop over the elements of the notes
+        // filter out on people
         note.elements.filter(e => e.type == 'person').forEach((ele) => {
+          // If allPeople[username] DOES NOT EXIST
           if (!allPeople.hasOwnProperty(ele.id)) {
             allPeople[ele.id] = new Person({
               username: ele.id,
               displayName: ele.raw,
               latest: note.end
             })
+            hasChanges = true;
           } else {
-
+            // AllPeople[username] exists
+            // Get this note date
             const noteDate = new Date(note.end);
+            // Get last note date
             const lastUserDate = allPeople[ele.id].latest || '1960-01-01';
             const latest = new Date(lastUserDate);
 
+            // Is latest less than this note date?
             if (latest < noteDate) {
               hasChanges = true;
+              // yes, update the latest to this notes date
               allPeople[ele.id].latest = note.end;
             }
           }
         })
       })
+      // Push allPeople to vue this.people
       this.people = allPeople;
       this.notes = peopleNotes;
+      // If has changes = save the 
       if (hasChanges) this.saveStorage();
       return this.notes;
 
