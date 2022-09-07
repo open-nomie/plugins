@@ -79,46 +79,60 @@
             >
               <ul class="nui-card mb-4">
                 <li class="nui-item text-sm justify-between">
-                  <div class="font-normal nui-text-400">Last Interaction</div>
+                  <div class="font-normal nui-text-500">Stay In Touch</div>
+                  <select
+                    class="nui-input nui-text-primary compact text-right"
+                    v-model="activePerson.maxNoContactDays"
+                    :change="setNoContactDays"
+                  >
+                    <option :value="undefined">Never</option>
+                    <option value="1">Every 1 Day</option>
+                    <option value="2">Every 2 Days</option>
+                    <option value="7">Each Week</option>
+                    <option value="14">Every 2 Weeks</option>
+                    <option value="30">Once a Month</option>
+                    <option value="60">Every 2 months</option>
+                    <option value="90">Quarterly</option>
+                  </select>
+                </li>
+                <hr nui />
+                <li class="nui-item text-sm justify-between">
+                  <div class="font-normal nui-text-500">Last Interaction</div>
 
                   <h3 class="nui-title text-sm" v-if="activePerson.latest">
                     {{dayjs(activePerson.latest).fromNow()}}
                   </h3>
                   <h3 class="nui-title text-sm" v-else>Unknown</h3>
                 </li>
-                <hr nui />
-                <div>
-                  <li class="nui-item text-sm justify-between">
-                    <div class="font-normal nui-text-400">
-                      <div>Birthday</div>
-                    </div>
+              </ul>
 
-                    <div class="nui-title text-sm solid">
-                      {{activePerson.birthdayFormatted}}
-                    </div>
+              <ul class="nui-card">
+                <li class="nui-item text-sm justify-between">
+                  <div class="font-normal nui-text-500">
+                    <div>Birthday</div>
+                  </div>
 
-                    <div
-                      class="text-green-500 font-semibold uppercase"
-                      v-if="activePerson.isBirthday"
-                    >
-                      Today 🎉
-                    </div>
-                    <div
-                      class="text-gray-400"
-                      v-else-if="activePerson.birthday"
-                    >
-                      In {{activePerson.birthdayFromNow}} days
-                    </div>
-                    <button
-                      v-else
-                      @click="editPerson(activePerson)"
-                      class="text-primary-500 underline"
-                    >
-                      Set
-                    </button>
-                  </li>
-                  <hr class="nui-divider" />
-                </div>
+                  <div class="nui-title text-sm solid">
+                    {{activePerson.birthdayFormatted}}
+                  </div>
+
+                  <div
+                    class="text-green-500 font-semibold uppercase"
+                    v-if="activePerson.isBirthday"
+                  >
+                    Today 🎉
+                  </div>
+                  <div class="text-gray-400" v-else-if="activePerson.birthday">
+                    In {{activePerson.birthdayFromNow}} days
+                  </div>
+                  <button
+                    v-else
+                    @click="editPerson(activePerson)"
+                    class="text-primary-500 underline"
+                  >
+                    Set
+                  </button>
+                </li>
               </ul>
 
               <div id="user-actions" class="nui-card mt-2">
@@ -316,9 +330,9 @@
                   <option value="1">Every 1 Day</option>
                   <option value="2">Every 2 Days</option>
                   <option value="7">Each Week</option>
-                  <option value="14">Every Couple Weeks</option>
+                  <option value="14">Every 2 Weeks</option>
                   <option value="30">Once a Month</option>
-                  <option value="60">Every Couple months</option>
+                  <option value="60">Every 2 months</option>
                   <option value="90">Quarterly</option>
                 </select>
               </fieldset>
@@ -410,6 +424,35 @@
           </div>
         </section>
 
+        <section
+          class="nui-card"
+          v-if="!loading && !needsAttention.length && everyoneElse.length"
+        >
+          <div class="py-4 px-6 text-center nui-text-500">
+            <p class="nui-text-800 font-semibold mb-2">
+              👍 You're all caught up!
+            </p>
+            <p class="text-xs leading-tight">
+              Tap a person and select their "Stay in Touch" frequency. This will
+              help you remember when to reach out to your friends.
+            </p>
+          </div>
+        </section>
+
+        <section
+          class="nui-card"
+          v-if="!loading && !needsAttention.length && !everyoneElse.length"
+        >
+          <div class="py-4 px-6 text-center nui-text-500">
+            <p class="nui-text-800 font-semibold mb-2">No people found</p>
+            <p class="text-xs leading-tight">
+              My People will automatically pull in your people over the last 30
+              days (when you track them in Nomie using the @person tag). You can
+              also manually import a user by tapping the "+" below. them.
+            </p>
+          </div>
+        </section>
+
         <section class="nui-card" v-if="needsAttention.length">
           <header class="rounded-t-lg nui-toolbar space-x-2 text-sm shadow-lg">
             <span class="text-red-500">⚠️</span>
@@ -444,12 +487,26 @@
               <option value="z-a">Z-A</option>
             </select>
           </header>
-          <div
-            class="leading-tight text-center p-4 text-sm"
-            v-if="!everyoneElse.length"
+          <p
+            v-if="loading"
+            class="flex items-center justify-center space-x-2 nui-text-800 font-semibold py-4"
           >
-            No important people found. <br />You should add some!
-          </div>
+            <svg
+              class="animate-spin nui-text-primary"
+              width="22"
+              height="22"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 16C5.863 16 3.854 15.168 2.343 13.657C0.832 12.146 0 10.137 0 7.99999C0 6.48699 0.425 5.01399 1.228 3.73899C2.00824 2.50072 3.11245 1.49957 4.421 0.843994L5.093 2.18499C4.02935 2.71847 3.13169 3.53245 2.497 4.53899C1.84428 5.57527 1.4986 6.77529 1.5 7.99999C1.5 11.584 4.416 14.5 8 14.5C11.584 14.5 14.5 11.584 14.5 7.99999C14.5 6.76999 14.155 5.57399 13.503 4.53899C12.8689 3.53196 11.9711 2.71784 10.907 2.18499L11.579 0.843994C12.8876 1.49957 13.9918 2.50072 14.772 3.73899C15.5756 5.01481 16.0014 6.49218 16 7.99999C16 10.137 15.168 12.146 13.657 13.657C12.146 15.168 10.137 16 8 16Z"
+                fill="currentColor"
+              />
+            </svg>
+
+            <span>Loading People...</span>
+          </p>
           <div v-for="person in everyoneElse">
             <hr class="nui-divider" />
             <person-item

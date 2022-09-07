@@ -46,15 +46,7 @@ class Person {
       let last = plugin.dayjs(this.latest || '2001-01-01');
       let daysDiff = plugin.dayjs().diff(last, 'days')
       let maxDiff = this.maxNoContactDays - daysDiff;
-      console.log(`${this.username} hasn't been talked about in ${daysDiff} days, meaning theres ${maxDiff} days left before you have to contact them`);
       return maxDiff;
-      // if (daysDiff >= this.maxNoContactDays) {
-      //   return daysDiff || 0;
-      // } else if ((daysDiff * 1.5) >= this.maxNoContactDays) {
-      //   return 0.5;
-      // } else {
-      //   return 0;
-      // }
     } else {
       return 1000;
     }
@@ -148,7 +140,6 @@ const PersonItem = Vue.component('person-item', {
         No recent contact
       </p>
     </main>
-    
     <div v-if="person.noContactScore == 3" class="text-orange-500">🕐</div>
   </button>
   `
@@ -198,7 +189,7 @@ new Vue({
       this.people = fromStorage;
 
       const latest = await this.getLatest();
-      console.log({ latest });
+
     })
 
     setTimeout(() => {
@@ -236,7 +227,7 @@ new Vue({
         } else if (this.sort == 'z-a') {
           return stripName(a.name).toLowerCase() < stripName(b.name).toLowerCase() ? 1 : -1
         } else if (this.sort == 'attention') {
-          console.log(`${a.noContactScore} ${b.noContactScore}`);
+
           return a.noContactScore > b.noContactScore ? 1 : -1
         }
         return true;
@@ -308,6 +299,12 @@ new Vue({
     dayjs(date) {
       return plugin.dayjs(date);
     },
+    setNoContactDays(evt) {
+      const value = evt.target.value;
+      let person = new Person(this.activePerson);
+      person.maxNoContactDays = value;
+      this.upsertPerson(person);
+    },
     setSort(evt) {
       const value = evt.target.value
       localStorage.setItem('mp-sort', value);
@@ -375,7 +372,7 @@ new Vue({
       if (!person.displayName || !person.avatar) {
         const value = await plugin.getTrackable(tag);
         const trackable = value.trackable;
-        console.log({ edit: trackable });
+
         if (trackable) {
           person.displayName = trackable.person.displayName;
           person.avatar = trackable.person.avatar;
@@ -403,7 +400,7 @@ new Vue({
         allPeople[person.username] = person;
       }
       this.people = allPeople;
-      console.log(`Added ${person.username}`, this.people);
+
       plugin.storage.setItem('people', this.people);
 
     },
