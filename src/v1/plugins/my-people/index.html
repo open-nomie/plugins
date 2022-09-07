@@ -78,10 +78,10 @@
               v-if="activePersonView == 'info'"
             >
               <ul class="nui-card mb-4">
-                <li class="nui-item text-sm justify-between">
+                <li class="nui-item text-sm justify-between pr-2">
                   <div class="font-normal nui-text-500">Stay In Touch</div>
                   <select
-                    class="nui-input nui-text-primary compact text-right"
+                    class="nui-input compact text-right"
                     v-model="activePerson.maxNoContactDays"
                     :change="setNoContactDays"
                   >
