@@ -230,6 +230,11 @@ new Vue({
       person.maxNoContactDays = value;
       this.upsertPerson(person);
     },
+    postActionPrompt(type) {
+      this.activePersonView = 'check-in';
+      this.checkInNote = `${type} @${this.activePerson.username} `;
+
+    },
     setSort(evt) {
       const value = evt.target.value
       localStorage.setItem('mp-sort', value);
@@ -310,7 +315,7 @@ new Vue({
       this.activePerson = person;
     },
     async editPerson(_person) {
-
+      // Create seperate object
       const person = new Person(_person);
       const tag = `@${person.username}`;
       if (!person.displayName || !person.avatar) {
@@ -358,7 +363,6 @@ new Vue({
         plugin.storage.setItem('people', allPeople);
         this.people = allPeople;
       }
-
     },
     saveStorage() {
       plugin.storage.setItem('people', this.people);

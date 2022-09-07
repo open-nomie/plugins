@@ -7,7 +7,7 @@
     <title>My People</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-    <script src="my-people/person.class.js"></script>
+    <script src="/v1/plugins/my-people/person.class.js"></script>
     <script src="/v1/nomie-plugin.js"></script>
     <link href="/styles/nui@v1.css" rel="stylesheet" />
 
@@ -107,9 +107,9 @@
                 </li>
               </ul>
 
-              <ul class="nui-card">
+              <ul class="nui-card mb-4">
                 <li class="nui-item text-sm justify-between">
-                  <div class="font-normal nui-text-500">
+                  <div class="font-normal nui-text-500 nui-filler">
                     <div>Birthday</div>
                   </div>
 
@@ -136,9 +136,22 @@
                 </li>
               </ul>
 
+              <!-- About the Person-->
+              <section class="nui-card mt-4 p-4" v-if="activePerson.notes">
+                <h2 class="nui-title text-xs">About</h2>
+                <p class="text-sm nui-text-700 leading-tight">
+                  {{activePerson.notes}}
+                </p>
+              </section>
+
+              <!-- Actions for Person -->
               <div id="user-actions" class="nui-card mt-2">
                 <div id="phone-contacts" v-if="activePerson.phone">
-                  <a class="nui-item space-x-4" :href="`tel:${cleanPhone}`">
+                  <a
+                    class="nui-item space-x-4"
+                    @click="postActionPrompt('Called')"
+                    :href="`tel:${cleanPhone}`"
+                  >
                     <span class="text-2xl">📱</span>
                     <h2>{{activePerson.phone}}</h2>
                   </a>
@@ -146,6 +159,7 @@
                   <a
                     class="nui-item space-x-4"
                     target="_blank"
+                    @click="postActionPrompt('Texted')"
                     :href="`sms:${cleanPhone}`"
                   >
                     <span class="text-2xl">💬</span>
@@ -158,6 +172,7 @@
                   <a
                     target="_blank"
                     :href="`mailto:${activePerson.email}`"
+                    @click="postActionPrompt('Email')"
                     class="nui-item space-x-4"
                     v-if="activePerson.email"
                   >
@@ -166,13 +181,6 @@
                   </a>
                 </div>
               </div>
-
-              <section class="nui-card mt-4 p-4" v-if="activePerson.notes">
-                <h2 class="nui-title">About</h2>
-                <p class="text-sm nui-text-700 leading-tight">
-                  {{activePerson.notes}}
-                </p>
-              </section>
 
               <section class="nui-card mt-4">
                 <button
@@ -223,12 +231,12 @@
                   rows="3"
                   placeholder="What's up?"
                 ></textarea>
-                <div class="pt-2 w-full flex justify-end space-x-4">
+                <div class="pt-2 w-full flex justify-between space-x-4">
                   <button
-                    class="nui-button nui-text-400"
-                    @click="checkInNote = ''"
+                    class="nui-button nui-text-600"
+                    @click="checkInNote = ''; activePersonView = 'info'"
                   >
-                    Clear
+                    ← Cancel
                   </button>
                   <button
                     v-if="!saving"
