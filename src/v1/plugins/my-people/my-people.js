@@ -86,7 +86,7 @@ new Vue({
     saving: false,
     checkInNote: '',
     inNomie: true,
-    sort: localStorage.getItem('mp-sort') || 'oldest'
+    sort: localStorage.getItem('mp-sort') || 'attention'
   }),
   components: {
     'person-item': PersonItem,
