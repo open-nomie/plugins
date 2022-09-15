@@ -64,7 +64,9 @@ const PersonItem = Vue.component('person-item', {
         No recent contact
       </p>
     </main>
-    <div v-if="person.noContactScore == 3" class="text-orange-500">🕐</div>
+    
+    <div v-if="[1,2,3].indexOf(person.noContactScore) > -1" class="text-orange-500">🕐</div>
+    <div v-if="person.noContactScore < 1" class="text-gray-500">⚠️</div>
   </button>
   `
 })
@@ -214,7 +216,7 @@ new Vue({
     },
     needsAttention() {
       return this.peopleArray.filter((p) => {
-        return !p.isBirthday && p.noContactScore < 2
+        return !p.isBirthday && p.noContactScore <= 2
       }).sort((a, b) => {
         return a.noContactScore > b.noContactScore ? 1 : -1
       })
