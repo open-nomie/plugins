@@ -31,6 +31,7 @@ export type PluginType = {
   uses: Array<PluginUseTypes>;
   error?: string;
   dayjs: Dayjs;
+  testMode: boolean;
 };
 
 type getTrackableUsageProps = {
@@ -56,6 +57,7 @@ export class NomiePlugin {
   pid: undefined | string;
   lid: undefined | string;
   listeners: any;
+  testMode: boolean;
   ready: boolean;
   storage: any;
   prefs?: UserPrefs;
@@ -68,6 +70,7 @@ export class NomiePlugin {
     this.lid = undefined;
     this.listeners = {};
     this.ready = false;
+    this.testMode = starter.testMode ? true : false;
     this.storage = new NomieStorage(this, "prefs");
     this.dayjs = dayjs;
     const fireReady = async () => {
@@ -109,6 +112,10 @@ export class NomiePlugin {
         resolve(payload.results);
       };
     });
+  }
+
+  createStorage(fileName: string): NomieStorage {
+    return new NomieStorage(this, fileName);
   }
 
   openNoteEditor(note: any) {
@@ -362,15 +369,22 @@ export class NomiePlugin {
    */
   prompt(title: string, message?: string, type?: string) {
     return new Promise((resolve, reject) => {
-      let id = this.toId("prompt");
-      this.broadcast("prompt", {
-        title,
-        message,
-        type,
-        id,
-      });
-      // this.addResponseListener(id, resolve)
-      this.addResponseListener(id, resolve);
+      if (this.pluginDetails.testMode) {
+        let res = window.prompt([title, message].filter((s) => s).join(" - "));
+        if (res) {
+          resolve({ value: res });
+        }
+      } else {
+        let id = this.toId("prompt");
+        this.broadcast("prompt", {
+          title,
+          message,
+          type,
+          id,
+        });
+        // this.addResponseListener(id, resolve)
+        this.addResponseListener(id, resolve);
+      }
     });
   }
 
@@ -596,7 +610,13 @@ export class NomieStorage {
    * @returns The NomieStorage object
    */
   async init(): Promise<NomieStorage> {
-    const raw = await this.plugin.getStorageItem(this.filename);
+    let raw = undefined;
+    if (this.plugin.testMode) {
+      raw = localStorage.getItem(`testMode-storage-${this.filename}`) || "{}";
+      raw = { value: JSON.parse(raw) };
+    } else {
+      raw = await this.plugin.getStorageItem(this.filename);
+    }
     if (raw && raw.value) this.data = raw.value;
     return this;
   }
@@ -625,6 +645,13 @@ export class NomieStorage {
    * @returns The promise from the plugin.
    */
   private async save() {
-    return this.plugin.setStorageItem(this.filename, this.data);
+    if (this.plugin.testMode) {
+      localStorage.setItem(
+        `testMode-storage-${this.filename}`,
+        JSON.stringify(this.data)
+      );
+    } else {
+      return this.plugin.setStorageItem(this.filename, this.data);
+    }
   }
 }
