@@ -11,6 +11,7 @@ class Person {
     this.email = starter.email;
     this.phone = starter.phone;
     this.maxNoContactDays = starter.maxNoContactDays;
+    this.dirty = starter.username ? false : true;
   }
 
   get age() {
@@ -72,6 +73,19 @@ class Person {
   get birthdayFormatted() {
     if (this.birthday) {
       return this.nextBirthdate.format('Do MMM');
+    }
+  }
+
+  get asTrackable() {
+    return {
+      type: 'person',
+      tag: '@' + this.username,
+      person: {
+        username: this.username,
+        displayName: this.displayName,
+        notes: this.notes,
+        avatar: "https://shareking.s3.amazonaws.com/Screen-Shot-2022-10-07-09-20-03.45.png"
+      }
     }
   }
 }
