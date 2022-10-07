@@ -80,14 +80,7 @@ let videos = [
     description: `Less guidance. More silence. Just the important bits. `,
     note: "#meditation(00:30:00) advanced meditation with @AreYouZen",
     youtubeId: '8g2iNQIcbLY',
-  },
-  {
-    name: '45-Min Guided Meditation',
-    duration: '00:45:00',
-    description: `Longer sit for beginners`,
-    note: "#meditation(00:45:00) advanced meditation with @Oysho",
-    youtubeId: 'vQ5ZwjnkJ80',
-  },
+  }
 
 ]
 
