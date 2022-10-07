@@ -6,7 +6,7 @@ const plugin = new NomiePlugin({
   addToCaptureMenu: true,
   addToMoreMenu: true,
   emoji: "👨‍👩‍👧‍👦",
-  version: "0.4",
+  version: "0.5",
   description: "Keep up with the people that matter the most.",
   uses: ['createNote', 'selectTrackables', 'searchNotes'],
 });
@@ -19,6 +19,15 @@ const wait = (ms) => {
     }, ms)
   })
 }
+
+const strToTagSafe = (str) => {
+  return str
+    .replace(/(\@|\+\#)/gi, '')
+    .trim()
+    .replace(/[^A-Z0-9]/gi, '_')
+    .toLowerCase()
+}
+
 
 
 const AvatarComponent = Vue.component('person-item', {
@@ -222,9 +231,19 @@ new Vue({
       })
     }
   },
+  watch: {
+    "editingPerson.displayName"() {
+      if (this.editingPerson && this.editingPerson.dirty) {
+        this.editingPerson.username = strToTagSafe(this.editingPerson.displayName);
+      }
+    }
+  },
   methods: {
     dayjs(date) {
       return plugin.dayjs(date);
+    },
+    createPerson() {
+      this.editingPerson = new Person({});
     },
     setNoContactDays(evt) {
       const value = evt.target.value;
@@ -315,9 +334,13 @@ new Vue({
     },
     async openPerson(person) {
       this.activePerson = person;
+      this.checkInNote = `@` + person.username + ' '
     },
+    /**
+     * Edit a Person - open Modal
+     * @param {Person} person 
+     */
     async editPerson(_person) {
-      // Create seperate object
       const person = new Person(_person);
       const tag = `@${person.username}`;
       if (!person.displayName || !person.avatar) {
@@ -334,13 +357,37 @@ new Vue({
       await wait(100);
       this.editingPerson = person
     },
-    savePerson(person) {
-      this.upsertPerson(person);
-      if (this.activePerson.username == this.editingPerson.username) {
-        this.openPerson(new Person(person));
-      }
-      this.editingPerson = undefined;
+    openInNomie(person) {
+      plugin.openTrackableEditor(person.asTrackable)
     },
+    /**
+     * Save a Person to the plugin database
+     * @param {Person} person 
+     */
+    savePerson(person) {
+      try {
+        // If new Person (not in Nomie)
+        if (person.dirty) {
+          person.dirty = false;
+          plugin.openTrackableEditor(person.asTrackable)
+        }
+        this.upsertPerson(person);
+
+        // If we have the active Person open while editing
+        if (this.activePerson && this.activePerson.username == this.editingPerson.username) {
+          this.openPerson(new Person(person));
+        }
+
+        // Clear Editing State
+        this.editingPerson = undefined;
+      } catch (e) {
+        alert(e.message);
+      }
+    },
+    /**
+     * Add or Update Person to the plugin database
+     * @param {Person} person 
+     */
     upsertPerson(person) {
       if (!person instanceof Person) throw error('Must be a person class to upsert a person');
       let allPeople = { ...this.people };

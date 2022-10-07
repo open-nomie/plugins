@@ -193,7 +193,7 @@
                 <hr class="nui-divider" />
                 <button
                   class="nui-item nui-text-inverse space-x-4"
-                  @click="plugin.openTrackableEditor({tag:`@${activePerson.username}`})"
+                  @click="openInNomie(activePerson)"
                 >
                   <span class="text-2xl">🛠</span>
                   <span>Open in Nomie's Editor</span>
@@ -246,11 +246,7 @@
                   >
                     Save to Nomie
                   </button>
-                  <button
-                    disabled
-                    v-else
-                    class="nui-button w-full lg solid primary"
-                  >
+                  <button disabled v-else class="nui-button lg solid primary">
                     Saving...
                   </button>
                 </div>
@@ -329,6 +325,16 @@
                 />
               </fieldset>
 
+              <fieldset v-if="editingPerson.dirty" class="nui-fieldset inline">
+                <label>Tag</label>
+                <input
+                  class="nui-input"
+                  type="text"
+                  placeholder="Nomie tag"
+                  v-model="editingPerson.username"
+                />
+              </fieldset>
+
               <fieldset class="nui-fieldset inline">
                 <label>Stay in touch</label>
                 <select
@@ -385,8 +391,11 @@
                 ></textarea>
               </fieldset>
 
-              <hr class="nui-divider my-2" />
-              <fieldset class="nui-text-solid flex items-center space-x-4">
+              <hr class="nui-divider my-2" v-if="!editingPerson.dirty" />
+              <fieldset
+                v-if="!editingPerson.dirty"
+                class="nui-text-solid flex items-center space-x-4"
+              >
                 <label class="nui-text-800 text-sm font-semibold"
                   >Hide Person</label
                 >
@@ -526,12 +535,15 @@
         </section>
       </div>
       <footer class="nui-bg-glass nui-toolbar sticky space-x-1 pl-6 bottom-0">
-        <h2 class="nui-text-700">My People</h2>
+        <h2 class="nui-text-700 flex-grow flex-shrink w-full">My People</h2>
         <button
-          class="nui-button nui-text-2xl nui-text-inverse"
+          class="nui-button nui-text-primary"
           @click="selectPersonTrackable()"
         >
-          +
+          Import
+        </button>
+        <button class="nui-button nui-text-primary" @click="createPerson()">
+          Create
         </button>
       </footer>
     </div>
