@@ -157,7 +157,6 @@ new Vue({
         this.view = 'hidden';
         this.ignoreFields = plugin.storage.getItem('ignoreFields') || [];
         this.autoTrack = plugin.storage.getItem('autoTrack') === false ? false : true;
-        console.log("onLaunch Weather - ", { autoTrack: this.autoTrack });
         this.loadWeather();
       }, 500);
     });
@@ -218,7 +217,7 @@ new Vue({
   },
   watch: {
     "autoTrack"() {
-      console.log("Auto Track Change", this.autoTrack);
+
       plugin.storage.setItem('autoTrack', this.autoTrack);
     }
   },
