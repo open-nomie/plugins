@@ -1,118 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nomie Weather Plugin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/v1/nomie-plugin.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-  </head>
-  <body class="bg-white dark:bg-black">
-    <div id="content" class="h-screen">
-      <div
-        :class="{ 'items-center': view = 'modal' }"
-        class="text-gray-500 w-full h-screen flex justify-center"
-        v-if="!currently.temp && !error"
-      >
-        Loading...
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible"
+        content="IE=edge" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <title>Nomie Weather Plugin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/v1/nomie-plugin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+  <link href="/styles/nui@v1.css"
+        rel="stylesheet" />
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+  <main id="content"
+        class="h-screen">
+    <section style="min-height:70vh"
+             class="p-10 flex items-center justify-center text-gray-500"
+             v-if="!currently.temp">
+      <div :class="{ 'items-center': view = 'modal' }"
+           class="text-gray-500 w-full flex justify-center"
+           v-if="!error">
+        Looking for the lastest weather...
       </div>
-      <div
-        v-if="error && !currently.temp"
-        class="bg-red-500 w-full px-4 py-2 text-sm text-white mb-5"
-      >
+      <section v-if="error"
+               class="text-center bg-white dark:bg-black text-red-500 rounded-md w-full px-4 py-2 text-sm  mb-5">
         {{error}}
-      </div>
+      </section>
 
       <!-- Show This when opened as a Modal -->
-      <div
-        v-if="currently.temp"
-        :class="{ 'justify-center': view == 'modal' }"
-        class="h-screen py-4 flex flex-col items-center w-full space-y-4"
-      >
-        <p class="dark:text-white opacity-50 text-sm">
-          {{currently.dateString}}
-        </p>
-        <p class="dark:text-white font-bold leading-tight text-4xl mb-6">
-          {{currently.description}} Today
-        </p>
+    </section>
+    <section v-if="currently.temp"
+             :class="{ 'justify-center': view == 'modal' }"
+             class=" py-4 flex flex-col items-center w-full space-y-4">
+      <p class="dark:text-white opacity-50 text-sm">
+        {{currently.dateString}}
+      </p>
+      <p class="dark:text-white font-bold leading-tight text-4xl mb-6">
+        {{currently.description}} Today
+      </p>
 
-        <ul
-          v-if="currently.temp"
+      <ul v-if="currently.temp"
           class="dark:text-white flex flex-col space-y-2 px-4 w-full"
-          style="max-width: 400px"
-        >
-          <li class="grid grid-cols-2 gap-4 mb-2 text-center text-sm">
-            <div>
-              <div class="text-xl font-semibold">{{currently.temp_low}}°</div>
-              <div>↓ Low</div>
-            </div>
-            <div>
-              <div class="text-xl font-semibold">{{currently.temp}}°</div>
-              <div>↑ High</div>
-            </div>
-          </li>
-          <li
-            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
-          >
-            <strong class="mr-2"> 🌞 Day Length </strong>
-            <span>{{currently.day_length}}</span>
-          </li>
-          <li
-            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
-          >
-            <strong class="mr-2"> 🏋️‍♀️ Pressure </strong>
-            <span>{{currently.pressure}}</span>
-          </li>
-          <li
-            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
-          >
-            <strong class="mr-2"> 💨 Wind Speed </strong>
-            <span>{{currently.wind_speed}}</span>
-          </li>
-          <li
-            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
-          >
-            <strong class="mr-2"> 🌥 Clouds </strong>
-            <span>{{currently.clouds}}</span>
-          </li>
-          <li
-            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
-          >
-            <strong class="mr-2"> 💧 Humidity </strong>
-            <span>{{currently.humidity}}</span>
-          </li>
-          <li
-            class="flex items-center justify-between border-t border-gray-500 border-opacity-40 pt-2"
-          >
-            <strong class="mr-2"> 🌧 Precipitation </strong>
-            <span>{{currently.precipitation}}</span>
-          </li>
-        </ul>
+          style="max-width: 400px">
+        <li class="grid grid-cols-2 gap-4 mb-2 text-center text-sm">
+          <div>
+            <div class="text-xl font-semibold">{{currently.temp_low}}°</div>
+            <div>↓ Low</div>
+          </div>
+          <div>
+            <div class="text-xl font-semibold">{{currently.temp}}°</div>
+            <div>↑ High</div>
+          </div>
+        </li>
+        <li class="nui-item py-0">
+          <span class="text-3xl">🌞</span>
+          <strong class="mr-2 nui-filler">Day Length </strong>
+          <span>{{currently.day_length}}</span>
+        </li>
+        <li class="nui-item py-0">
+          <span class="text-3xl">🏋️‍♀️</span>
+          <strong class="mr-2 nui-filler">Pressure </strong>
+          <span>{{currently.pressure}}</span>
+        </li>
+        <li class="nui-item py-0">
+          <span class="text-3xl">💨</span>
+          <strong class="mr-2 nui-filler">Wind Speed </strong>
+          <span>{{currently.wind_speed}}</span>
+        </li>
+        <li class="nui-item py-0">
+          <span class="text-3xl">🌥</span>
+          <strong class="mr-2 nui-filler">Clouds </strong>
+          <span>{{currently.clouds}}</span>
+        </li>
+        <li class="nui-item py-0">
+          <span class="text-3xl">💧</span>
+          <strong class="mr-2 nui-filler">Humidity </strong>
+          <span>{{currently.humidity}}</span>
+        </li>
+        <li class="nui-item py-0">
+          <span class="text-3xl">🌧</span>
+          <strong class="mr-2 nui-filler">Precipitation </strong>
+          <span>{{currently.precipitation}}</span>
+        </li>
 
-        <button
-          class="mx-auto block mt-5 py-1 px-2 text-xs rounded-md bg-pink-500 text-white"
-          @click="trackWeather"
-        >
-          Track Again
-        </button>
-      </div>
-    </div>
+      </ul>
+    </section>
 
-    <script src="/v1/plugins/weather/weather.js"></script>
+    <footer class="mt-6 pb-4 px-4 rounded-lg overflow-hidden">
+      <section id="setting"
+               style="max-width:400px;"
+               class="dark:text-white mx-auto bg-white dark:bg-gray-800 shadow-md rounded-md w-full"
+               aria-label="Settings">
+        <div class="nui-hbar px-4 py-2 space-x-2">
+          <label class="nui-filler"> Track Current Weather </label>
+          <button :disabled="error"
+                  class="nui-button py-1 px-2 nui-text-primary"
+                  @click="trackWeather">
+            Track Now
+          </button>
+        </div>
+        <hr class="nui-divider"
+            style="padding-left: 26px" />
+        <div class="nui-hbar py-2 w-full px-4 space-x-2">
+          <main class="nui-filler">
+            <label> Auto track</label>
+            <p class="text-sm opacity-60">
+              Track once a day (if you open
+              Nomie)
+            </p>
+          </main>
+          <label class="nui-switch w-18 flex-shrink-0 flex-grow-0">
+            <input type="checkbox"
+                   v-model="autoTrack" />
+            <span class="nui-control"></span>
+          </label>
+        </div>
+        <hr class="nui-divider"
+            style="padding-left: 26px" />
+        <div class="nui-hbar px-4 py-2 space-x-2">
+          <main class="nui-filler">
+            <label class="nui-filler"> API Key </label>
+            <p class="text-sm text-gray-500"
+               v-if="!apikey">No API Key Found</p>
+            <p class="text-sm text-gray-500"
+               v-else="">•••••••••••••••••••••</p>
+          </main>
+          <button class="nui-button py-1 px-2 nui-text-primary"
+                  @click="getAndSetApiKey">
+            Change
+          </button>
+        </div>
 
-    <!-- 100% privacy friendly analytics -->
-    <script
-      async
-      defer
-      src="https://scripts.simpleanalyticscdn.com/latest.js"
-    ></script>
-    <noscript
-      ><img
-        src="https://queue.simpleanalyticscdn.com/noscript.gif"
-        alt=""
-        referrerpolicy="no-referrer-when-downgrade"
-    /></noscript>
-  </body>
+
+        <!-- <hr class="nui-divider"
+            style="padding-left: 26px" />
+
+        <div class="nui-hbar py-2 px-4 space-x-2">
+          <main class="nui-filler">
+            <label> Customize</label>
+          </main>
+          <label class="nui-switch w-18 flex-shrink-0 flex-grow-0">
+            <input type="checkbox" />
+            <span class="nui-control"></span>
+          </label>
+        </div> -->
+      </section>
+    </footer>
+  </main>
+
+  <script src="/v1/plugins/weather/weather.js"></script>
+
+  <!-- 100% privacy friendly analytics -->
+  <script async
+          defer
+          src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+  <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif"
+         alt=""
+         referrerpolicy="no-referrer-when-downgrade" /></noscript>
+</body>
+
 </html>

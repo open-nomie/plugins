@@ -7,7 +7,7 @@ const plugin = new NomiePlugin({
   addToMoreMenu: true,
   addToWidgets: true,
   emoji: "⛈",
-  version: "1.0",
+  version: "1.2",
   description: `Track the weather with Tomorrow.io. Using your location, this plugin will track the weather one time a day, as long as you open Nomie. **Note** this plugin requires a FREE API key from Tomorrow.io`,
   uses: ["createNote", "onLaunch", "getLocation"],
 });
@@ -42,14 +42,6 @@ const getCurrentConditions = async (location, apikey) => {
 
   const timeSteps = '1d'
 
-  // "windSpeed",
-  // "snowAccumulation",
-  // "sunriseTime",
-  // "sunsetTime",
-  // "precipitationType",
-  // "temperatureMin",
-  // "temperatureMax",
-  // "cloudCover"
   const fields = [
     "sunriseTime",
     "sunsetTime",
@@ -77,7 +69,6 @@ const getCurrentConditions = async (location, apikey) => {
   const urlParams = params.join('&') + `&apikey=${apikey}`;
 
   const url = `https://api.tomorrow.io/v4/timelines?${urlParams}`;
-  // // const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${location.lat}&lon=${location.lng}&appid=${apikey}&units=${units}`;
   const call = await fetch(url);
   const data = await call.json();
 
@@ -85,9 +76,6 @@ const getCurrentConditions = async (location, apikey) => {
   if (data && data.data) {
     let weather = data.data.timelines[0];
     let day = weather.intervals[0].values;
-    console.log('🌤🌤🌤🌤🌤🌤🌤🌤🌤')
-
-
     let dayTimeLight = new Date(day.sunsetTime).getTime() - new Date(day.sunriseTime).getTime();
 
     let weatherData = {
@@ -144,6 +132,8 @@ const getCurrentConditions = async (location, apikey) => {
 
 };
 
+const API_KEY_NAME = "tomorrow-api-key";
+
 /**
  * Vue 2.0 App
  */
@@ -153,18 +143,21 @@ new Vue({
     currently: {},
     view: "modal",
     apikey: undefined,
-    registered: false
+    registered: false,
+    ignoreFields: [],
+    autoTrack: false,
   }),
   async mounted() {
-    const API_KEY_NAME = "tomorrow-api-key";
-
     /**
      * On Launch
      * Gets fired each time the user opens Nomie
      */
     plugin.onLaunch(() => {
-      setTimeout(()=>{
+      setTimeout(() => {
         this.view = 'hidden';
+        this.ignoreFields = plugin.storage.getItem('ignoreFields') || [];
+        this.autoTrack = plugin.storage.getItem('autoTrack') === false ? false : true;
+        console.log("onLaunch Weather - ", { autoTrack: this.autoTrack });
         this.loadWeather();
       }, 500);
     });
@@ -182,8 +175,13 @@ new Vue({
      * on UI Opened
      * Gets fired when the user opens the plugin modal
      */
-    plugin.onUIOpened(() => {
+    plugin.onUIOpened(async () => {
       this.view = "modal";
+      this.autoTrack = plugin.storage.getItem('autoTrack') ? true : false;
+
+      if (!this.apikey) {
+        await this.getAndSetApiKey()
+      }
       this.loadWeather();
     });
 
@@ -204,36 +202,45 @@ new Vue({
       // Tag we're registered
       this.registered = true;
       // If no API key, ask the user for one. 
-      if (!this.apikey) {
-        const res = await plugin.prompt(
-          "Tomorrow.io API Key",
-          `Tomorrow.io Account & API are required. Get your [FREE API key here](https://app.tomorrow.io/development/keys)`
-        );
-        if (res && res.value) {
-          this.apikey = res.value;
 
-          plugin.storage.setItem(API_KEY_NAME, this.apikey);
-        }
-      }
     });
+
+
+
 
     /**
      * Wait for 6 seconds then throw an error if we didnt get the temp.
      */
     setTimeout(() => {
       if (!this.currently.temp)
-        this.error = "Unable to get your weather. Try again later.";
+        this.error = "Unable to get your weather. Exit the plugin, and try again.";
     }, 6000);
   },
-
+  watch: {
+    "autoTrack"() {
+      console.log("Auto Track Change", this.autoTrack);
+      plugin.storage.setItem('autoTrack', this.autoTrack);
+    }
+  },
   methods: {
+    async getAndSetApiKey() {
+      const res = await plugin.prompt(
+        "Tomorrow.io API Key",
+        `Tomorrow.io Account & API are required. Get your [FREE API key here](https://app.tomorrow.io/development/keys)`
+      );
+      if (res && res.value) {
+        this.apikey = res.value;
+        plugin.storage.setItem(API_KEY_NAME, this.apikey);
+        return true;
+      }
+    },
     async loadWeather() {
 
       const location = await plugin.getLocation();
       if (location) {
         try {
           let weather = await this.getWeatherCached(location);
-          if (weather.fresh) {
+          if (weather.fresh && this.autoTrack) {
             this.trackWeather();
           }
           this.currently = weather;
@@ -251,7 +258,7 @@ new Vue({
      * @returns The weather data
      */
     async getWeatherCached() {
-      const LAST_WEATHER_KEY = 'cached-weather';
+      const LAST_WEATHER_KEY = 'cached-weather-3';
       try {
         let fromCache = plugin.storage.getItem(LAST_WEATHER_KEY);
         let lookupData = fromCache || {};
@@ -269,25 +276,12 @@ new Vue({
         // If it's not cached - lets get it
         if (!cached) {
           // Get User Location f
-          let location = await plugin.getLocation();
-          if (location) {
-
-            // Get weather based on location
-            let weather = await getCurrentConditions(location, this.apikey);
-
-            if (weather) {
-              // Tag the date
-              weather.captured = date;
-              // If we have a temp - we're good to go
-              if (weather.temp) {
-                // Save to Plugin storage in Nomie
-                await plugin.storage.setItem(LAST_WEATHER_KEY, weather);
-              }
-              cached = weather;
-              cached.fresh = true;
-            } else {
-              throw Error('Unable to get the weather right now... Try later')
-            }
+          const weather = await this.getFreshWeather();
+          if (weather.temp) {
+            // Save to Plugin storage in Nomie
+            await plugin.storage.setItem(LAST_WEATHER_KEY, weather);
+            cached = weather;
+            cached.fresh = true;
           }
         }
         return cached;
@@ -295,8 +289,30 @@ new Vue({
         this.error = `${e}`;
       }
     },
-    async getWeatherAsNote() {
-      const currently = await this.getWeatherCached();
+    async getFreshWeather() {
+      let location = await plugin.getLocation();
+      if (location) {
+
+        // Get weather based on location
+        let weather = await getCurrentConditions(location, this.apikey);
+
+        if (weather) {
+          // Tag the date
+          weather.captured = date;
+          // If we have a temp - we're good to go
+          return weather;
+        } else {
+          throw Error('Unable to get the weather right now... Try later')
+        }
+      }
+    },
+    async getWeatherAsNote(fresh) {
+      let currently;
+      if (fresh) {
+        currently = await this.getFreshWeather();
+      } else {
+        currently = await this.getWeatherCached();
+      }
       if (currently) {
         return {
           note: currently.note,
@@ -306,8 +322,12 @@ new Vue({
       }
       return undefined;
     },
+
+    /**
+     * It gets the weather as a note, and if it gets a note, it creates it
+     */
     async trackWeather() {
-      const weatherNote = await this.getWeatherAsNote();
+      const weatherNote = await this.getWeatherAsNote(true);
       if (weatherNote) {
         plugin.createNote(weatherNote);
       }
