@@ -258,7 +258,7 @@ new Vue({
      * @returns The weather data
      */
     async getWeatherCached() {
-      const LAST_WEATHER_KEY = 'cached-weather-3';
+      const LAST_WEATHER_KEY = 'cached-weather';
       try {
         let fromCache = plugin.storage.getItem(LAST_WEATHER_KEY);
         let lookupData = fromCache || {};
