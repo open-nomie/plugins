@@ -28,10 +28,10 @@
         Looking for the lastest weather...
       </div>
       <section v-if="errors.length"
-               class="flex flex-col divide-light-400 space-y-2 max-w-sm mx-auto text-center bg-white dark:bg-black text-red-500 rounded-md w-full px-4 py-2 text-sm  mb-5">
-        <div class="error text-red-500"
+               class="flex flex-col  max-w-sm mx-auto text-center bg-white dark:bg-black text-red-500 rounded-md w-full px-4 py-2 text-sm  mb-5">
+        <div class="error text-left py-3 flex w-full space-x-2 border-b border-gray-500 border-opacity-20 text-red-500"
              v-for="error in errors">
-          {{error}}
+          <span>⛔️</span> <span>{{error}}</span>
         </div>
       </section>
 
@@ -63,7 +63,7 @@
         <li class="nui-item py-0">
           <span class="text-3xl">🌞</span>
           <strong class="mr-2 nui-filler">Day Length </strong>
-          <span>{{currently.day_length}}</span>
+          <span>{{currently.day_length}}h</span>
         </li>
         <li class="nui-item py-0">
           <span class="text-3xl">🏋️‍♀️</span>
@@ -78,12 +78,12 @@
         <li class="nui-item py-0">
           <span class="text-3xl">🌥</span>
           <strong class="mr-2 nui-filler">Clouds </strong>
-          <span>{{currently.clouds}}</span>
+          <span>{{currently.clouds}}%</span>
         </li>
         <li class="nui-item py-0">
           <span class="text-3xl">💧</span>
           <strong class="mr-2 nui-filler">Humidity </strong>
-          <span>{{currently.humidity}}</span>
+          <span>{{currently.humidity}}%</span>
         </li>
         <li class="nui-item py-0">
           <span class="text-3xl">🌧</span>
@@ -99,10 +99,10 @@
                style="max-width:400px;"
                class="dark:text-white mx-auto bg-white dark:bg-gray-800 shadow-md rounded-md w-full"
                aria-label="Settings">
-        <div class="nui-hbar px-4 py-2 space-x-2">
+        <div v-if="!errors.length"
+             class="nui-hbar px-4 py-2 space-x-2">
           <label class="nui-filler"> Track Current Weather </label>
-          <button :disabled="errors.length"
-                  class="nui-button py-1 px-2 nui-text-primary"
+          <button class="nui-button py-1 px-2 nui-text-primary"
                   @click="trackWeather">
             Track Now
           </button>

@@ -12,9 +12,12 @@ const plugin = new NomiePlugin({
   uses: ["createNote", "onLaunch", "getLocation"],
 });
 
+const debug = false;
 const logger = (a, b, c, d) => {
-  console.log("%c" + "Weather Plugin", "font-weight:bold;");
-  console.log("🌨", a, b ? b : '', c ? c : '', d ? d : '');
+  if (debug) {
+    console.log("%c" + "Weather Plugin", "font-weight:bold;");
+    console.log("🌨", a, b ? b : '', c ? c : '', d ? d : '');
+  }
 }
 
 
@@ -156,6 +159,7 @@ new Vue({
     ignoreFields: [],
     autoTrack: false,
     errors: [],
+    location: undefined
   }),
   async mounted() {
     /**
@@ -209,7 +213,7 @@ new Vue({
       this.ignoreFields = plugin.storage.getItem('ignoreFields') || [];
       this.autoTrack = plugin.storage.getItem('autoTrack') === false ? false : true;
       this.apikey = plugin.storage.getItem(API_KEY_NAME);
-      logger("onRegistered - this.apikey", this.apikey, this.autoTrack);
+      logger("onRegistered - this.apikey", this.apikey.length, this.autoTrack);
       // Set LocationId and Plugin Id
       this.lid = payload.lid;
       this.pid = payload.pid;
@@ -226,8 +230,9 @@ new Vue({
      */
     setTimeout(() => {
       if (!this.currently.temp)
-        this.showError("Unable to get your weather. Exit the plugin, and try again.")
-
+        this.showError("Unable to get your weather.");
+      if (!this.location) this.showError("Could not find location")
+      if (!this.registered) this.showError("Plugin was not properly registered, try to exit and refresh plugin or Nomie.")
     }, 6000);
   },
   watch: {
@@ -255,12 +260,18 @@ new Vue({
       if (res && res.value && res.value.length > 4) {
         this.apikey = res.value;
         plugin.storage.setItem(API_KEY_NAME, this.apikey);
-        logger("getAndSetAPIKey res", this.apikey);
+        logger("getAndSetAPIKey res", this.apikey.length);
         this.loadWeather();
         return true;
       } else {
         alert("Invalid Weather Key provided");
       }
+    },
+
+    async getLocation() {
+      const location = await plugin.getLocation();
+      this.location = location;
+      return location;
     },
 
     /**
@@ -270,7 +281,7 @@ new Vue({
      */
     async loadWeather() {
       logger("loadWeather()");
-      const location = await plugin.getLocation();
+      const location = await this.getLocation();
       logger("loadWeather Location", location);
       if (location) {
         try {
@@ -330,7 +341,7 @@ new Vue({
     async getFreshWeather() {
 
       logger("getFreshWeather()")
-      let location = await plugin.getLocation();
+      let location = await this.getLocation();
       if (location) {
         logger("getFreshWeather() location", location);
         // Get weather based on location
