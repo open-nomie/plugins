@@ -199,7 +199,7 @@ new Vue({
       this.apikey = plugin.storage.getItem(API_KEY_NAME);
       console.log("Mail API Key", this.apikey);
 
-      if (this.apikey) this.trackWeather();
+      if (this.apikey) this.loadWeather();
       // Set LocationId and Plugin Id
       this.lid = payload.lid;
       this.pid = payload.pid;
@@ -222,11 +222,15 @@ new Vue({
   },
   watch: {
     "autoTrack"() {
-
       plugin.storage.setItem('autoTrack', this.autoTrack);
     }
   },
   methods: {
+
+    /**
+     * > Prompt the user for their API key, if they provide one, save it and load the weather
+     * @returns A boolean value.
+     */
     async getAndSetApiKey() {
       const res = await plugin.prompt(
         "Tomorrow.io API Key",
@@ -239,6 +243,12 @@ new Vue({
         return true;
       }
     },
+
+    /**
+     * It gets the user's location, then gets the weather for that location, then if the weather is
+     * fresh and the user has auto-tracking enabled, it tracks the weather, then if there was an error,
+     * it sets the error message, otherwise it sets the current weather
+     */
     async loadWeather() {
       const location = await plugin.getLocation();
       if (location) {
