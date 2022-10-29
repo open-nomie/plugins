@@ -12,6 +12,11 @@ const plugin = new NomiePlugin({
   uses: ["createNote", "onLaunch", "getLocation"],
 });
 
+const logger = (a, b, c, d) => {
+  console.log("%c" + "Weather Plugin", "font-weight:bold;");
+  console.log("🌨", a, b ? b : '', c ? c : '', d ? d : '');
+}
+
 
 const msToHourFormat = (ms) => {
   // 1- Convert to seconds:
@@ -35,7 +40,7 @@ const msToHourFormat = (ms) => {
  * description, latitude, longitude, dateString
  */
 const getCurrentConditions = async (location, apikey) => {
-
+  logger("getCurrentConditions", { location, apikey });
   // Determine user Units
   const units = !plugin.prefs?.useMetric ? "imperial" : "metric";
   // Call Open Weather Map
@@ -66,11 +71,15 @@ const getCurrentConditions = async (location, apikey) => {
     `units=${units}`,
     `timesteps=1d`
   ]
+
+
   const urlParams = params.join('&') + `&apikey=${apikey}`;
 
+  logger("Calling Tomorrow API")
   const url = `https://api.tomorrow.io/v4/timelines?${urlParams}`;
   const call = await fetch(url);
   const data = await call.json();
+  logger("Tomorrow results", data);
 
 
   if (data && data.data) {
@@ -153,6 +162,7 @@ new Vue({
      * Gets fired each time the user opens Nomie
      */
     plugin.onLaunch(() => {
+      logger("plugin.onLaunch");
       setTimeout(() => {
         this.view = 'hidden';
         this.ignoreFields = plugin.storage.getItem('ignoreFields') || [];
@@ -179,9 +189,10 @@ new Vue({
       this.autoTrack = plugin.storage.getItem('autoTrack') ? true : false;
 
       if (!this.apikey) {
-        console.log("Do we have an API Key?");
+        logger("onUIOpened - no API Key Found")
         await this.getAndSetApiKey()
       } else {
+        logger("onUIOpened - API Key exists")
         this.loadWeather();
       }
 
@@ -197,7 +208,7 @@ new Vue({
       await plugin.storage.init();
       // Get Key from storage
       this.apikey = plugin.storage.getItem(API_KEY_NAME);
-      console.log("Mail API Key", this.apikey);
+      logger("onRegistered - this.apikey", this.apikey);
 
       if (this.apikey) this.loadWeather();
       // Set LocationId and Plugin Id
@@ -232,15 +243,19 @@ new Vue({
      * @returns A boolean value.
      */
     async getAndSetApiKey() {
+      logger("Get the Tomrorrow API Key");
       const res = await plugin.prompt(
         "Tomorrow.io API Key",
         `Tomorrow.io Account & API are required. Get your [FREE API key here](https://app.tomorrow.io/development/keys)`
       );
-      if (res && res.value) {
+      if (res && res.value && res.value.length > 4) {
         this.apikey = res.value;
         plugin.storage.setItem(API_KEY_NAME, this.apikey);
+        logger("getAndSetAPIKey res", this.apiKey);
         this.loadWeather();
         return true;
+      } else {
+        alert("Invalid Weather Key provided");
       }
     },
 
@@ -250,6 +265,7 @@ new Vue({
      * it sets the error message, otherwise it sets the current weather
      */
     async loadWeather() {
+      logger("loadWeather()");
       const location = await plugin.getLocation();
       if (location) {
         try {
@@ -273,6 +289,7 @@ new Vue({
      */
     async getWeatherCached() {
       const LAST_WEATHER_KEY = 'cached-weather';
+      logger("getWeatherCached()");
       try {
         let fromCache = plugin.storage.getItem(LAST_WEATHER_KEY);
         let lookupData = fromCache || {};
@@ -284,6 +301,7 @@ new Vue({
           if (lookupData.captured === new Date().toDateString()) {
             cached = lookupData;
             cached.fresh = false;
+            logger("getWeatherCache Exists for today - no need to get fresh")
           }
         }
 
@@ -298,15 +316,18 @@ new Vue({
             cached.fresh = true;
           }
         }
+        logger("getWeatherCached results", cached);
         return cached;
       } catch (e) {
         this.error = `${e}`;
       }
     },
     async getFreshWeather() {
+
+      logger("getFreshWeather()")
       let location = await plugin.getLocation();
       if (location) {
-
+        logger("getFreshWeather() location", location);
         // Get weather based on location
         let weather = await getCurrentConditions(location, this.apikey);
 
