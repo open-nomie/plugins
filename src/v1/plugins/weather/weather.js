@@ -162,11 +162,9 @@ new Vue({
      * Gets fired each time the user opens Nomie
      */
     plugin.onLaunch(() => {
-      logger("plugin.onLaunch");
+      logger("plugin.onLaunch", this.apikey);
       setTimeout(() => {
         this.view = 'hidden';
-        this.ignoreFields = plugin.storage.getItem('ignoreFields') || [];
-        this.autoTrack = plugin.storage.getItem('autoTrack') === false ? false : true;
         if (this.apikey) this.loadWeather();
       }, 500);
     });
@@ -207,16 +205,15 @@ new Vue({
       // Initialize the Storage 
       await plugin.storage.init();
       // Get Key from storage
+      this.ignoreFields = plugin.storage.getItem('ignoreFields') || [];
+      this.autoTrack = plugin.storage.getItem('autoTrack') === false ? false : true;
       this.apikey = plugin.storage.getItem(API_KEY_NAME);
-      logger("onRegistered - this.apikey", this.apikey);
-
-      if (this.apikey) this.loadWeather();
+      logger("onRegistered - this.apikey", this.apikey, this.autoTrack);
       // Set LocationId and Plugin Id
       this.lid = payload.lid;
       this.pid = payload.pid;
       // Tag we're registered
       this.registered = true;
-      // If no API key, ask the user for one. 
 
     });
 
@@ -251,7 +248,7 @@ new Vue({
       if (res && res.value && res.value.length > 4) {
         this.apikey = res.value;
         plugin.storage.setItem(API_KEY_NAME, this.apikey);
-        logger("getAndSetAPIKey res", this.apiKey);
+        logger("getAndSetAPIKey res", this.apikey);
         this.loadWeather();
         return true;
       } else {
@@ -267,6 +264,7 @@ new Vue({
     async loadWeather() {
       logger("loadWeather()");
       const location = await plugin.getLocation();
+      logger("loadWeather Location", location);
       if (location) {
         try {
           let weather = await this.getWeatherCached(location);
