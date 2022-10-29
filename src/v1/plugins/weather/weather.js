@@ -157,7 +157,7 @@ new Vue({
         this.view = 'hidden';
         this.ignoreFields = plugin.storage.getItem('ignoreFields') || [];
         this.autoTrack = plugin.storage.getItem('autoTrack') === false ? false : true;
-        this.loadWeather();
+        if (this.apikey) this.loadWeather();
       }, 500);
     });
 
@@ -179,9 +179,12 @@ new Vue({
       this.autoTrack = plugin.storage.getItem('autoTrack') ? true : false;
 
       if (!this.apikey) {
+        console.log("Do we have an API Key?");
         await this.getAndSetApiKey()
+      } else {
+        this.loadWeather();
       }
-      this.loadWeather();
+
     });
 
     /**
@@ -194,7 +197,9 @@ new Vue({
       await plugin.storage.init();
       // Get Key from storage
       this.apikey = plugin.storage.getItem(API_KEY_NAME);
+      console.log("Mail API Key", this.apikey);
 
+      if (this.apikey) this.trackWeather();
       // Set LocationId and Plugin Id
       this.lid = payload.lid;
       this.pid = payload.pid;
@@ -230,11 +235,11 @@ new Vue({
       if (res && res.value) {
         this.apikey = res.value;
         plugin.storage.setItem(API_KEY_NAME, this.apikey);
+        this.loadWeather();
         return true;
       }
     },
     async loadWeather() {
-
       const location = await plugin.getLocation();
       if (location) {
         try {
@@ -242,11 +247,11 @@ new Vue({
           if (weather.fresh && this.autoTrack) {
             this.trackWeather();
           }
+          this.error = undefined;
           this.currently = weather;
         } catch (e) {
           this.error = e.message;
         }
-
       } else {
         this.error = "Unable to fine your location";
       }
