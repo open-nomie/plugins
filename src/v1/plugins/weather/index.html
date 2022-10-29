@@ -21,14 +21,18 @@
     <section style="min-height:70vh"
              class="p-10 flex items-center justify-center text-gray-500"
              v-if="!currently.temp">
+
       <div :class="{ 'items-center': view = 'modal' }"
            class="text-gray-500 w-full flex justify-center"
-           v-if="!error">
+           v-if="!errors.length">
         Looking for the lastest weather...
       </div>
-      <section v-if="error"
-               class="text-center bg-white dark:bg-black text-red-500 rounded-md w-full px-4 py-2 text-sm  mb-5">
-        {{error}}
+      <section v-if="errors.length"
+               class="flex flex-col divide-light-400 space-y-2 max-w-sm mx-auto text-center bg-white dark:bg-black text-red-500 rounded-md w-full px-4 py-2 text-sm  mb-5">
+        <div class="error text-red-500"
+             v-for="error in errors">
+          {{error}}
+        </div>
       </section>
 
       <!-- Show This when opened as a Modal -->
@@ -97,7 +101,7 @@
                aria-label="Settings">
         <div class="nui-hbar px-4 py-2 space-x-2">
           <label class="nui-filler"> Track Current Weather </label>
-          <button :disabled="error"
+          <button :disabled="errors.length"
                   class="nui-button py-1 px-2 nui-text-primary"
                   @click="trackWeather">
             Track Now

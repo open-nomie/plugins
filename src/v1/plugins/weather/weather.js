@@ -155,6 +155,7 @@ new Vue({
     registered: false,
     ignoreFields: [],
     autoTrack: false,
+    errors: [],
   }),
   async mounted() {
     /**
@@ -225,7 +226,8 @@ new Vue({
      */
     setTimeout(() => {
       if (!this.currently.temp)
-        this.error = "Unable to get your weather. Exit the plugin, and try again.";
+        this.showError("Unable to get your weather. Exit the plugin, and try again.")
+
     }, 6000);
   },
   watch: {
@@ -234,7 +236,12 @@ new Vue({
     }
   },
   methods: {
-
+    clearErrors() {
+      this.errors = [];
+    },
+    showError(message) {
+      this.errors.push(message);
+    },
     /**
      * > Prompt the user for their API key, if they provide one, save it and load the weather
      * @returns A boolean value.
@@ -271,13 +278,13 @@ new Vue({
           if (weather.fresh && this.autoTrack) {
             this.trackWeather();
           }
-          this.error = undefined;
+          if (weather) this.clearErrors();
           this.currently = weather;
         } catch (e) {
-          this.error = e.message;
+          this.showError(`${e}`);
         }
       } else {
-        this.error = "Unable to fine your location";
+        this.showError("Unable to find your location");
       }
     },
     /**
@@ -317,7 +324,7 @@ new Vue({
         logger("getWeatherCached results", cached);
         return cached;
       } catch (e) {
-        this.error = `${e}`;
+        this.showError(`${e}`);
       }
     },
     async getFreshWeather() {
