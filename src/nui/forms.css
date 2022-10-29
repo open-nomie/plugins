@@ -61,9 +61,9 @@ select.nui-input.compact {
 .nui-input {
   @apply appearance-none;
   @apply nui-bg-solid;
+  @apply rounded-full;
   @apply border border-gray-500 border-opacity-20 dark:border-gray-400 dark:border-opacity-40;
   @apply py-2 px-3;
-  @apply rounded-lg;
   @apply flex;
   @apply dark:text-white;
   @apply shadow-sm;
@@ -120,7 +120,7 @@ select.nui-input.compact {
     @apply h-6 w-6;
     @apply left-1 top-1;
     @apply rounded-full;
-    @apply nui-bg-solid;
+    @apply bg-white dark:bg-gray-300;
     -webkit-transition: 0.4s;
     transition: 0.4s;
   }

@@ -458,6 +458,7 @@ select.nui-input.compact {
   }
 }
 .nui-input {
+  border-radius: 9999px;
   border-width: 1px;
   border-color: rgb(107 114 128 / var(--tw-border-opacity));
   --tw-border-opacity: 0.2;
@@ -476,7 +477,6 @@ select.nui-input.compact {
   padding-bottom: 0.5rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  border-radius: 0.5rem;
   display: flex;
 }
 @media (prefers-color-scheme: dark) {
@@ -575,7 +575,7 @@ select.nui-input.compact {
 @media (prefers-color-scheme: dark) {
   .nui-switch .nui-control:before {
     --tw-bg-opacity: 1;
-    background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+    background-color: rgb(209 213 219 / var(--tw-bg-opacity));
   }
 }
 .nui-switch .nui-control:before {
