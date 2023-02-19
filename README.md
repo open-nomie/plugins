@@ -348,6 +348,8 @@ You can install the plugins by copying and pasting the URL provided below in to 
 | ⏲ Nomie Fasting               | Track your Fast period and log your achievements                                                                                                          | [https://github.com/RdeLange/nomie-plugin-fast](https://github.com/RdeLange/nomie-plugin-fast)                              | [https://dailynomie.github.io/nomie-plugin-fast/](https://dailynomie.github.io/nomie-plugin-fast/)                                                     |
 | ⌚️ Nomie Apple Watch        | Enable logging data and notes via your Apple Watch                                                                                                        | [https://github.com/RdeLange/nomie-plugin-applewatch](https://github.com/RdeLange/nomie-plugin-applewatch)                        | In development                                                     |
 | 💪 Nomie 7mins Workout      | Follow Guided 7 Minutes Workouts                                                                                                                           | [https://github.com/RdeLange/nomie-plugin-7minwo](https://github.com/RdeLange/nomie-plugin-7minwo)                      | [https://dailynomie.github.io/nomie-plugin-7minwo/](https://dailynomie.github.io/nomie-plugin-7minwo/)                                                     |
+| ☁️ Nomie WordCloud      | Add WordCloud to your Nomie Dashboard                                                                                                                           | [https://github.com/RdeLange/nomie-plugin-widget-wordcloud](https://github.com/RdeLange/nomie-plugin-widget-wordcloud)                      | [https://dailynomie.github.io/nomie-plugin-widget-wordcloud/](https://dailynomie.github.io/nomie-plugin-widget-wordcloud/)                                                     |
+| 💬 Nomie Quotes      | Add random daily Quotes to your Nomie Dashboard                                                                                                                           | [https://github.com/RdeLange/nomie-plugin-widget-quotes](https://github.com/RdeLange/nomie-plugin-widget-quotes)                      | [https://dailynomie.github.io/nomie-plugin-widget-quotes/](https://dailynomie.github.io/nomie-plugin-widget-quotes/)                                                     |
 |  🛠 Tester      | Tester plugin for developers. Will test different features and functions of `nomie-plugin.js` this is completely unhelpful for non-technical people                                                                                                                            | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester)                            | https://dailynomie.github.io/nomie-plugins/v1/plugins/tester                                                     |
 
 ---
@@ -370,6 +372,5 @@ in order to test your local plugin within [https://open-nomie.github.io](https:/
 
 ---
 
-Qestions? support@happydata.org 
 
-**Copyright 2022 All Rights Reserved.** [Happy Data, LLC](https://happydata.org)
+**Copyright 2023 All Rights Reserved.**
