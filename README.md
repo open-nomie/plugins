@@ -359,7 +359,7 @@ if (urlParams.has("widgetindex")){
 }
 ```
 
-Please refer to the ☁️WordCloud or 💬Quote Plugins in below available plugin list for examples how this can be implemented.
+Please refer to the ☁️Nomie WordCloud or 💬Nomie Quote Plugins in below available plugin list for examples how this can be implemented.
 
 ---
 
