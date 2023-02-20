@@ -361,6 +361,8 @@ if (urlParams.has("widgetindex")){
 
 Please refer to the ☁️WordCloud or 💬Quote Plugins in below available plugin list for examples how this can be implemented.
 
+---
+
 # Available Plugins
 
 You can install the plugins by copying and pasting the URL provided below in to Nomie’s Plugin manager (More Tab → Plugins)
