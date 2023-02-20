@@ -343,7 +343,7 @@ let Widgets = [{"widgetid":"1", "name":"Widget1","emoji":"🥴","config":{"wctex
 plugin.storage.setItem('widgets',Widgets);
 ```
 
-In above example we register 2 widgets. The fields widgetid, name and emoji are mandatory and will be used by Nomie to list the widgets as available widgets for this plugin. Any other fields (in above example the config object) can be added in support of your plugin.
+In above example we register 2 widgets. The fields **widgetid**, **name** and **emoji** are mandatory and will be used by Nomie to list the widgets as available widgets for this plugin. Any other fields (in above example the config object) can be added in support of your plugin.
 
 When adding widgets to the Nomie dashboard, users will get the list of configured widgets. Nomie will use the widgetid as parameter in the url when the widget is loaded in the dashboard.
 
