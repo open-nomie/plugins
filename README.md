@@ -1,20 +1,20 @@
 # Nomie6-oss Plugins [WIP]
 
-Nomie Plugins allows people who are familiar with HTML and Javascript to create entirely new methods of tracking and monitoring data within Nomie6-oss. 
+Nomie Plugins allows people who are familiar with HTML and Javascript to create entirely new methods of tracking and monitoring data within Nomie6-oss.
 
 ## Introduction
 
-Nomie Plugins use iframes to load and communicate with “plugins”. So this really just means, a plugin is a hosted HTML page, that has some extra javascript to request data to and from Nomie. We do this by using postMessage and window.onMessage to securely pass data between Nomie and your Plugin. 
+Nomie Plugins use iframes to load and communicate with “plugins”. So this really just means, a plugin is a hosted HTML page, that has some extra javascript to request data to and from Nomie. We do this by using postMessage and window.onMessage to securely pass data between Nomie and your Plugin.
 
 ### Resources
 
-**Repo** [https://github.com/open-nomie/plugins](https://github.com/open-nomie/plugins/) 
+**Repo** [https://github.com/open-nomie/plugins](https://github.com/open-nomie/plugins/)
 
-**Nomie6-oss on GitHub Pages**: [https://open-nomie.github.io](https://open-nomie.github.io/) 
+**Nomie6-oss on GitHub Pages**: [https://open-nomie.github.io](https://open-nomie.github.io/)
 
 # nomie-plugin.js
 
-This library abstracts the responsibility of posting messages and listening for messages into simple async calls. This document outlines the specific functions of `nomie-plugin.js`. 
+This library abstracts the responsibility of posting messages and listening for messages into simple async calls. This document outlines the specific functions of `nomie-plugin.js`.
 
 ### Including the nomie-plugin.js library
 
@@ -22,9 +22,9 @@ This library abstracts the responsibility of posting messages and listening for 
 <script src="https://cdn.jsdelivr.net/gh/open-nomie/plugins/bin/v1/nomie-plugin.js">
 ```
 
-## new NomiePlugin({pluginDetails})
+## new NomiePlugin( {pluginDetails})
 
-Once you’ve included `nomie-plugin.js` you’ll have access to the `NomiePlugin` class within the documents window. 
+Once you’ve included `nomie-plugin.js` you’ll have access to the `NomiePlugin` class within the documents window.
 
 ```jsx
 const plugin = new NomiePlugin({
@@ -39,7 +39,7 @@ const plugin = new NomiePlugin({
 });
 ```
 
-**Describe your plugin using the following properties:** 
+**Describe your plugin using the following properties:**
 
 - **name**: The name of your plugin
 - **emoji**: The Emoji that best describes your plugin
@@ -52,7 +52,7 @@ const plugin = new NomiePlugin({
 
 # Plugin Methods
 
-Methods marked with `uses:[]` are blocked by default. You must specifically define these function names in the uses array - this helps ensure users are fully aware of the data this plugin can access. 
+Methods marked with `uses:[]` are blocked by default. You must specifically define these function names in the uses array - this helps ensure users are fully aware of the data this plugin can access.
 
 ### plugin.createNote(string | log)
 
@@ -76,7 +76,7 @@ plugin.createNote({
 
 ### plugin.onLaunch(func)
 
-Fires off each time the user launches Nomie 
+Fires off each time the user launches Nomie
 
 `uses: [’onLaunch’]` is required for this method
 
@@ -91,7 +91,7 @@ plugin.onLaunch(()=>{
 
 `uses: [’onNote’]` is required for this method
 
-Fires off when the user save a new journal entry within Nomie - that is not SILENCED.  Silenced saves are ones that do not trigger a onNote call. This includes entries created from the API, entires created by plugins, or entries that have been edited. 
+Fires off when the user save a new journal entry within Nomie - that is not SILENCED.  Silenced saves are ones that do not trigger a onNote call. This includes entries created from the API, entires created by plugins, or entries that have been edited.
 
 ```tsx
 plugin.onNote((note)=>{
@@ -106,7 +106,7 @@ plugin.onNote((note)=>{
 
 `uses: [’getLocation’]` is required for this method
 
-Get the users current location 
+Get the users current location
 
 ```jsx
 const location = await plugin.getLocation();
@@ -117,13 +117,13 @@ if(location) {
 
 ### plugin.openTemplateURL(url)
 
-Open the URL of a template within Nomie. 
+Open the URL of a template within Nomie.
 
 ```jsx
 plugin.openTemplateURL('https://6.nomie.app/templates/adhd-template.json');
 ```
 
-### plugin.getTrackableUsage({tag, endDate, daysBack })
+### plugin.getTrackableUsage( {tag, endDate, daysBack })
 
 `uses: [’getTrackableUsage’]` is required for this method
 
@@ -144,7 +144,7 @@ console.log("Trackable Values", usage.dates); // array of dates
 
 `uses: [’searchNotes’]` is required for this method
 
-Search through all data notes stored in Nomie for a given term, and time frame. 
+Search through all data notes stored in Nomie for a given term, and time frame.
 
 - **term**: undefined or a string
 - **endDate**: last day of data to retrieve
@@ -206,7 +206,7 @@ console.log(trackable.person)
 
 ### plugin.getTrackableInput(tag:string)
 
-Need a specific value for a trackable? Using getTrackableInput, the user will be prompted to provide an input for the specified trackable. If it’s a person or context, the value will be return immediately, if its a tracker, then the tracker specific input will be displayed. 
+Need a specific value for a trackable? Using getTrackableInput, the user will be prompted to provide an input for the specified trackable. If it’s a person or context, the value will be return immediately, if its a tracker, then the tracker specific input will be displayed.
 
 ```jsx
 const sleep = await plugin.getTrackableInput('#sleep');
@@ -214,7 +214,7 @@ const sleep = await plugin.getTrackableInput('#sleep');
 
 ### plugin.onRegister(pluginPayload)
 
-Each time Nomie launches, it will register the plugin 
+Each time Nomie launches, it will register the plugin
 
 ```jsx
 plugin.onRegistered(async () => {
@@ -231,7 +231,7 @@ plugin.onRegistered(async () => {
 
 ### plugin.openNoteEditor(str | noteObject)
 
-Open up Nomie’s full size Note editor for a given note. 
+Open up Nomie’s full size Note editor for a given note.
 
 ```jsx
 plugin.openNoteEditor("Just as a string");
@@ -241,7 +241,7 @@ plugin.openNoteEditor({ note: 'this is a note', lat: 34, lng: -81, score: 2 })
 
 ### plugin.prompt(title, message)
 
-Request a value from the User. This will bring up Nomie’s prompt alert box with an input field where the user can input a response. 
+Request a value from the User. This will bring up Nomie’s prompt alert box with an input field where the user can input a response.
 
 ```jsx
 let res = await plugin.prompt('API Key Needed', 'You can get your API Key at [this link](http://somelink)');
@@ -252,7 +252,7 @@ if(res.value) {
 
 ### plugin.confirm(title, message)
 
-Ask the user to confirm an action - for example:  Save this Item? 
+Ask the user to confirm an action - for example:  Save this Item?
 
 ```jsx
 let res = await plugin.confirm('Save this item?', 'You can delete it later');
@@ -274,7 +274,7 @@ plugin.alert('This item was deleted', 'It is gone forever.');
 
 ### openURL(url, title)
 
-Open any URL in a modal within Nomie. 
+Open any URL in a modal within Nomie.
 
 ```jsx
 plugin.openURL('https://nomie.app')
@@ -305,7 +305,7 @@ The Nomie Plugin supports reading and writing to a users Nomie storage engine - 
 
 ### plugin.storage.init()
 
-The storage class **needs to be initialized** which is async, this will pull the latest data and store it in memory. 
+The storage class **needs to be initialized** which is async, this will pull the latest data and store it in memory.
 
 ```jsx
 await plugin.storage.init()
@@ -322,7 +322,7 @@ if(key) console.log(`We have a key! ${key}`);
 
 ### plugin.storage.setItem(key, value)
 
-Storage setItem works just like localStorage, except you can save entire javascript objects, and you do not need to serialize it to a string. 
+Storage setItem works just like localStorage, except you can save entire javascript objects, and you do not need to serialize it to a string.
 
 ```jsx
 plugin.storage.setItem('weather-api-key', 12345678);
@@ -330,27 +330,58 @@ plugin.storage.setItem('weather-api-key', 12345678);
 
 ---
 
+# Multiple Widgets
+
+In some cases you would like to enable multiple different widgets for the same plugin. You can enable this as per below instructions.
+
+### Widget Storage Settings
+
+In order to enable multiple widgets you need to register the different widgets in the Nomie Storage Engine for your plugin like the below example:
+
+```jsx
+let Widgets = [{"widgetid":"1", "name":"Widget1","emoji":"🥴","config":{"wctext":"This is Widget 1"}},{"widgetid":"2", "name":"Widget2”, "emoji":"👌","config":{"wctext":"This is Widget 2"}}];
+plugin.storage.setItem('widgets',Widgets);
+```
+
+In above example we register 2 widgets. The fields widgetid, name and emoji are mandatory and will be used by Nomie to list the widgets as available widgets for this plugin. Any other fields (in above example the config object) can be added in support of your plugin.
+
+When adding widgets to the Nomie dashboard, users will get the list of configured widgets. Nomie will use the widgetid as parameter in the url when the widget is loaded in the dashboard.
+
+So in above example, when the user added the second widget to the dashboard, the url which will be used for this widget is: www.plugindomain.com/?widgetindex=2
+
+You can use the following code to get the the value for the widgetindex parameter. Once you have the widgetindex value, you can use this in your plugin to direct the code to that specific widget.
+
+```jsx
+let WidgetIndex;
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has("widgetindex")){
+    WidgetIndex = urlParams.get("widgetindex");
+}
+```
+
+Please refer to the ☁️WordCloud or 💬Quote Plugins in below available plugin list for examples how this can be implemented.
+
 # Available Plugins
 
 You can install the plugins by copying and pasting the URL provided below in to Nomie’s Plugin manager (More Tab → Plugins)
 
 
-| PLUGIN                      | DESCRIPTION                                                                                                                                               | SOURCE CODE                                                                | URL FOR NOMIE                                                   |
-|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|-----------------------------------------------------------------|
-| 💨 Nomie Weather            | Track the weather one time each day. This plugin will ask the user to get a free API key from OpenWeatherMap, and will record the weather one time a day. | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather)   | https://dailynomie.github.io/nomie-plugins/v1/plugins/weather   |
-| 👨‍👩‍👧‍👦 Nomie My People | Keep up with the people that matter the most                                                                                                              | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/my-people](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/my-people) | https://dailynomie.github.io/nomie-plugins/v1/plugins/my-people |
-| 🧘🏽‍♀️ Nomie Meditate      | Follow Guided Meditations                                                                                                                                 | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/meditate](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/meditate) | https://dailynomie.github.io/nomie-plugins/v1/plugins/meditate  |
-| 📆 Nomie Memories           | Multi-year Nomie users can quickly see what happened on this day in your Nomie history                                                                    | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/memories](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/memories)  | https://dailynomie.github.io/nomie-plugins/v1/plugins/memories  |
-| 🪝 Nomie Api                | Api client for Nomie which enables you to remotely inject logs into Nomie                                                                                 | [https://github.com/RdeLange/nomie-plugin-api](https://github.com/RdeLange/nomie-plugin-api)                               | [https://dailynomie.github.io/nomie-plugin-api/](https://dailynomie.github.io/nomie-plugin-api/)                                                     |
-| 🧱 Nomie Blockly            | Use Google Blockly to visually program your own code which interacts with Nomie. You can pull data aswell as push logs                                     | [https://github.com/RdeLange/nomie-plugin-blockly](https://github.com/RdeLange/nomie-plugin-blockly)                           | [https://dailynomie.github.io/nomie-plugin-blockly/](https://dailynomie.github.io/nomie-plugin-blockly/)                                                     |
-| ⚖️ Nomie My Balance         | Define categories to measure your data, (auto) calculate your achievements by predefined algorithms and visualise as a Wheel of Life                      | [https://github.com/RdeLange/nomie-plugin-mybalance](https://github.com/RdeLange/nomie-plugin-mybalance)                         | [https://dailynomie.github.io/nomie-plugin-mybalance/](https://dailynomie.github.io/nomie-plugin-mybalance/)                                                      |
-| 🫁 Nomie Breathe            | Follow Guided Breathe Sessions                                                                                                                            | [https://github.com/RdeLange/nomie-plugin-breathe](https://github.com/RdeLange/nomie-plugin-breathe)                           | [https://dailynomie.github.io/nomie-plugin-breathe/](https://dailynomie.github.io/nomie-plugin-breathe/)                                                     |
-| ⏲ Nomie Fasting               | Track your Fast period and log your achievements                                                                                                          | [https://github.com/RdeLange/nomie-plugin-fast](https://github.com/RdeLange/nomie-plugin-fast)                              | [https://dailynomie.github.io/nomie-plugin-fast/](https://dailynomie.github.io/nomie-plugin-fast/)                                                     |
-| ⌚️ Nomie Apple Watch        | Enable logging data and notes via your Apple Watch                                                                                                        | [https://github.com/RdeLange/nomie-plugin-applewatch](https://github.com/RdeLange/nomie-plugin-applewatch)                        | In development                                                     |
-| 💪 Nomie 7mins Workout      | Follow Guided 7 Minutes Workouts                                                                                                                           | [https://github.com/RdeLange/nomie-plugin-7minwo](https://github.com/RdeLange/nomie-plugin-7minwo)                      | [https://dailynomie.github.io/nomie-plugin-7minwo/](https://dailynomie.github.io/nomie-plugin-7minwo/)                                                     |
-| ☁️ Nomie WordCloud      | Add WordCloud to your Nomie Dashboard                                                                                                                           | [https://github.com/RdeLange/nomie-plugin-widget-wordcloud](https://github.com/RdeLange/nomie-plugin-widget-wordcloud)                      | [https://dailynomie.github.io/nomie-plugin-widget-wordcloud/](https://dailynomie.github.io/nomie-plugin-widget-wordcloud/)                                                     |
-| 💬 Nomie Quotes      | Add random daily Quotes to your Nomie Dashboard                                                                                                                           | [https://github.com/RdeLange/nomie-plugin-widget-quotes](https://github.com/RdeLange/nomie-plugin-widget-quotes)                      | [https://dailynomie.github.io/nomie-plugin-widget-quotes/](https://dailynomie.github.io/nomie-plugin-widget-quotes/)                                                     |
-|  🛠 Tester      | Tester plugin for developers. Will test different features and functions of `nomie-plugin.js` this is completely unhelpful for non-technical people                                                                                                                            | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester)                            | https://dailynomie.github.io/nomie-plugins/v1/plugins/tester                                                     |
+| PLUGIN                         | DESCRIPTION                                                                                                                                               | SOURCE CODE                                                                                                                                              | URL FOR NOMIE                                                                                                              |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 💨 Nomie Weather               | Track the weather one time each day. This plugin will ask the user to get a free API key from OpenWeatherMap, and will record the weather one time a day. | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/weather)     | https://dailynomie.github.io/nomie-plugins/v1/plugins/weather                                                              |
+| 👨‍👩‍👧‍👦 Nomie My People | Keep up with the people that matter the most                                                                                                              | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/my-people](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/my-people) | https://dailynomie.github.io/nomie-plugins/v1/plugins/my-people                                                            |
+| 🧘🏽‍♀️ Nomie Meditate      | Follow Guided Meditations                                                                                                                                 | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/meditate](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/meditate)   | https://dailynomie.github.io/nomie-plugins/v1/plugins/meditate                                                             |
+| 📆 Nomie Memories              | Multi-year Nomie users can quickly see what happened on this day in your Nomie history                                                                    | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/memories](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/memories)   | https://dailynomie.github.io/nomie-plugins/v1/plugins/memories                                                             |
+| 🪝 Nomie Api                   | Api client for Nomie which enables you to remotely inject logs into Nomie                                                                                 | [https://github.com/RdeLange/nomie-plugin-api](https://github.com/RdeLange/nomie-plugin-api)                                                             | [https://dailynomie.github.io/nomie-plugin-api/](https://dailynomie.github.io/nomie-plugin-api/)                           |
+| 🧱 Nomie Blockly               | Use Google Blockly to visually program your own code which interacts with Nomie. You can pull data aswell as push logs                                    | [https://github.com/RdeLange/nomie-plugin-blockly](https://github.com/RdeLange/nomie-plugin-blockly)                                                     | [https://dailynomie.github.io/nomie-plugin-blockly/](https://dailynomie.github.io/nomie-plugin-blockly/)                   |
+| ⚖️ Nomie My Balance          | Define categories to measure your data, (auto) calculate your achievements by predefined algorithms and visualise as a Wheel of Life                      | [https://github.com/RdeLange/nomie-plugin-mybalance](https://github.com/RdeLange/nomie-plugin-mybalance)                                                 | [https://dailynomie.github.io/nomie-plugin-mybalance/](https://dailynomie.github.io/nomie-plugin-mybalance/)               |
+| 🫁 Nomie Breathe               | Follow Guided Breathe Sessions                                                                                                                            | [https://github.com/RdeLange/nomie-plugin-breathe](https://github.com/RdeLange/nomie-plugin-breathe)                                                     | [https://dailynomie.github.io/nomie-plugin-breathe/](https://dailynomie.github.io/nomie-plugin-breathe/)                   |
+| ⏲ Nomie Fasting               | Track your Fast period and log your achievements                                                                                                          | [https://github.com/RdeLange/nomie-plugin-fast](https://github.com/RdeLange/nomie-plugin-fast)                                                           | [https://dailynomie.github.io/nomie-plugin-fast/](https://dailynomie.github.io/nomie-plugin-fast/)                         |
+| ⌚️ Nomie Apple Watch         | Enable logging data and notes via your Apple Watch                                                                                                        | [https://github.com/RdeLange/nomie-plugin-applewatch](https://github.com/RdeLange/nomie-plugin-applewatch)                                               | In development                                                                                                             |
+| 💪 Nomie 7mins Workout         | Follow Guided 7 Minutes Workouts                                                                                                                          | [https://github.com/RdeLange/nomie-plugin-7minwo](https://github.com/RdeLange/nomie-plugin-7minwo)                                                       | [https://dailynomie.github.io/nomie-plugin-7minwo/](https://dailynomie.github.io/nomie-plugin-7minwo/)                     |
+| ☁️ Nomie WordCloud           | Add WordCloud to your Nomie Dashboard                                                                                                                     | [https://github.com/RdeLange/nomie-plugin-widget-wordcloud](https://github.com/RdeLange/nomie-plugin-widget-wordcloud)                                   | [https://dailynomie.github.io/nomie-plugin-widget-wordcloud/](https://dailynomie.github.io/nomie-plugin-widget-wordcloud/) |
+| 💬 Nomie Quotes                | Add random daily Quotes to your Nomie Dashboard                                                                                                           | [https://github.com/RdeLange/nomie-plugin-widget-quotes](https://github.com/RdeLange/nomie-plugin-widget-quotes)                                         | [https://dailynomie.github.io/nomie-plugin-widget-quotes/](https://dailynomie.github.io/nomie-plugin-widget-quotes/)       |
+| 🛠 Tester                      | Tester plugin for developers. Will test different features and functions of`nomie-plugin.js` this is completely unhelpful for non-technical people        | [https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester](https://github.com/open-nomie/plugins/tree/master/src/v1/plugins/tester)       | https://dailynomie.github.io/nomie-plugins/v1/plugins/tester                                                               |
 
 ---
 
@@ -358,7 +389,7 @@ You can install the plugins by copying and pasting the URL provided below in to 
 
 1. Go to the More Tab
 2. Select Plugins
-3. Click the + or Add Custom Plugin 
+3. Click the + or Add Custom Plugin
 4. Provide the url for the plugin
 5. Tap Install Plugin
 
@@ -366,11 +397,10 @@ You can install the plugins by copying and pasting the URL provided below in to 
 
 # Testing Local Plugins within Nomie
 
-By default browsers do not let insecure iframes to be called from a secure frame. 
+By default browsers do not let insecure iframes to be called from a secure frame.
 
 in order to test your local plugin within [https://open-nomie.github.io](https://open-nomie.github.io/) you will need to tell your browser to allow insecure content for Nomie’s domain.  Follow these instructions to make that change [https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en](https://nam12.safelinks.protection.outlook.com/?url=https%3A%2F%2Fexperienceleague.adobe.com%2Fdocs%2Ftarget%2Fusing%2Fexperiences%2Fvec%2Ftroubleshoot-composer%2Fmixed-content.html%3Flang%3Den&data=05%7C01%7C%7Caecea11047764815a08508da83a24eef%7C84df9e7fe9f640afb435aaaaaaaaaaaa%7C1%7C0%7C637967030376426601%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=T3RMGxJYNwJYXdDPgWgky%2FJPidtVp2BKy0L5ewqKpr0%3D&reserved=0)
 
 ---
-
 
 **Copyright 2023 All Rights Reserved.**
