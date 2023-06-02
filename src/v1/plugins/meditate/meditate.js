@@ -190,7 +190,7 @@ new Vue({
       this.activeVideo = undefined;
       this.videoState = "";
       this.completedVideo = undefined;
-    },
+    }},
     addRecord() {
       this.addMeditation = true;
       this.new_note = "#meditation(00:10:00)"
