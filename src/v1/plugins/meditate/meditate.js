@@ -4,11 +4,12 @@ const plugin = new NomiePlugin({
   addToCaptureMenu: true,
   addToMoreMenu: true,
   emoji: "🧘🏽‍♀️",
-  version: "1.0",
+  version: "1.1",
   description: "Follow Guided Meditations",
   uses: ['createNote'],
 });
 
+let uservideos = []
 let videos = [
 
   {
@@ -94,13 +95,20 @@ new Vue({
     loading: true,
     activeVideo: undefined,
     completedVideo: undefined,
+    addMeditation: undefined,
     videos: videos,
+    uservideos: uservideos,
     status: '',
     recording: false,
     inNomie: true,
     videoState: "",
     favorites: [],
-    trackable: undefined
+    trackable: undefined,
+    new_name: '',
+    new_duration: '',
+    new_description: '',
+    new_note: '',
+    new_youtubeid: '',
   }),
   computed: {
 
@@ -119,7 +127,10 @@ new Vue({
       this.loading = false;
       await plugin.storage.init()
       this.favorites = plugin.storage.getItem('favorites') || [];
+      this.uservideos = plugin.storage.getItem('uservideos') || []
       this.trackable = await plugin.getTrackable('#meditation');
+      this.videos = this.uservideos.concat(videos);
+      
 
     })
 
@@ -168,6 +179,58 @@ new Vue({
       this.activeVideo = undefined;
       this.videoState = "";
       this.completedVideo = undefined;
+    },
+    async deleteActive(videoId, evt) {
+      var confirm = await plugin.confirm('Delete this video?', 'Do you really want to delete this video?');
+      console.log("Confirm ",confirm)
+      if (confirm.value){
+      let newlist = this.uservideos.filter( el => el.youtubeId !== videoId ); 
+      this.uservideos = newlist;
+      plugin.storage.setItem("uservideos",this.uservideos);
+      this.videos = this.uservideos.concat(videos);
+      this.activeVideo = undefined;
+      this.videoState = "";
+      this.completedVideo = undefined;
+      console.log(videoId, "Deleted")}
+    },
+    addRecord() {
+      this.addMeditation = true;
+      this.new_note = "#meditation(00:10:00)"
+      console.log("add Meditation")
+    },
+    cancelAddRecord() {
+      this.addMeditation = false;
+      console.log("cancel Meditation")
+    },
+    saveAddRecord() {
+      //validate input
+      var feedback = "";
+      if (this.new_name =="") {feedback = "-Name missing"}
+      if (this.new_youtubeid =="") {feedback = feedback + "\n-Youtube Id is missing"}
+      if (this.new_note =="") {feedback = feedback + "\n-Nomie Note is missing"}
+      var isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(this.new_duration);
+      if (!isValid) {feedback = feedback + "\n-Duration is not in correct format"}
+      if (feedback !="") {
+        plugin.alert('Input Not Valid', feedback);
+        console.log("Your input is not fully valid",feedback)
+      }
+      else {
+      this.uservideos.push(
+        {
+          name: this.new_name,
+          duration: this.new_duration,
+          description: this.new_description,
+          note: this.new_note,
+          youtubeId: this.new_youtubeid,
+          userDefined: true,
+        }
+      )
+      plugin.storage.setItem("uservideos",this.uservideos)
+      this.videos = this.uservideos.concat(videos);
+      console.log("save Meditation")
+      console.log(this.new_name,this.new_description,this.new_note,this.new_duration,this.new_youtubeid)
+      this.addMeditation = false;
+    }
     },
     clear(prompt) {
       let proceed = prompt ? confirm('Clear completed video?') : true;
