@@ -182,7 +182,6 @@ new Vue({
     },
     async deleteActive(videoId, evt) {
       var confirm = await plugin.confirm('Delete this video?', 'Do you really want to delete this video?');
-      console.log("Confirm ",confirm)
       if (confirm.value){
       let newlist = this.uservideos.filter( el => el.youtubeId !== videoId ); 
       this.uservideos = newlist;
@@ -191,16 +190,13 @@ new Vue({
       this.activeVideo = undefined;
       this.videoState = "";
       this.completedVideo = undefined;
-      console.log(videoId, "Deleted")}
     },
     addRecord() {
       this.addMeditation = true;
       this.new_note = "#meditation(00:10:00)"
-      console.log("add Meditation")
     },
     cancelAddRecord() {
       this.addMeditation = false;
-      console.log("cancel Meditation")
     },
     saveAddRecord() {
       //validate input
@@ -212,7 +208,6 @@ new Vue({
       if (!isValid) {feedback = feedback + "\n-Duration is not in correct format"}
       if (feedback !="") {
         plugin.alert('Input Not Valid', feedback);
-        console.log("Your input is not fully valid",feedback)
       }
       else {
       this.uservideos.push(
@@ -227,8 +222,6 @@ new Vue({
       )
       plugin.storage.setItem("uservideos",this.uservideos)
       this.videos = this.uservideos.concat(videos);
-      console.log("save Meditation")
-      console.log(this.new_name,this.new_description,this.new_note,this.new_duration,this.new_youtubeid)
       this.addMeditation = false;
     }
     },
